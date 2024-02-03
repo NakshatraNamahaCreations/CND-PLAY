@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^localhost$ [OR]
+RewriteCond %{HTTP_HOST} ^localhost$
+# RewriteRule ^reservation-react$ index.html [QSA,L]

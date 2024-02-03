@@ -1,0 +1,117 @@
+#code-uplers-frame ul {
+    list-style-type: none;
+}
+#code-uplers-frame ul>li {
+    list-style-type: none;
+}
+
+#code-uplers-frame ul.tabs{
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+#code-uplers-frame ul.tabs li{
+    background: none;
+    color: #222;
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#code-uplers-frame ul.tabs li.current{
+    background: #ededed;
+    color: #222;
+}
+
+#code-uplers-frame .tab-content{
+    display: none;
+    background: #ededed;
+    padding: 15px;
+}
+
+#code-uplers-frame .tab-content.current{
+    display: inherit;
+}
+
+#code-uplers-frame .vertical-tab-link  ul.tabs li{
+    background: none;
+    color: #222;
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+    width: 100%;
+}
+
+#code-uplers-frame .vertical-tab-link  ul.tabs li.current{
+    background: #ededed;
+    color: #222;
+}
+
+#code-uplers-frame .vertical-tab-content .tab-content{
+    display: none;
+    background: #ededed;
+    padding: 15px;
+    width: 100%;
+}
+#code-uplers-frame .vertical-tab-content .tab-content.current{
+    display: inherit;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Customize website's scrollbar like Mac OS
+Not supports in Firefox and IE */
+
+/* total width */
+#code-uplers-frame ::-webkit-scrollbar {
+    background-color: transparent;
+    width: 5px;
+  }
+  
+  /* background of the scrollbar except button or resizer */
+  #code-uplers-frame ::-webkit-scrollbar-track {
+    background-color:transparent;
+  }
+  #code-uplers-frame ::-webkit-scrollbar-track:hover {
+    background-color:transparent;
+  }
+  
+  /* scrollbar itself */
+  #code-uplers-frame ::-webkit-scrollbar-thumb {
+    background-color: #babac0;
+    /* border-radius: 5px; */
+    border: 1px solid transparent;
+  }
+  #code-uplers-frame ::-webkit-scrollbar-thumb:hover {
+    background-color: transparent;
+    border: 1px solid transparent;
+  }
