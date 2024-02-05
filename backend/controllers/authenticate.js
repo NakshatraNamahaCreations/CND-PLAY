@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 exports.makeregister = async (req, res) => {
   let {
     ch_id,
-    // user_type,
     username,
     full_name,
     country_code,
@@ -46,7 +45,6 @@ exports.makeregister = async (req, res) => {
   try {
     let createuser = new authModel({
       ch_id,
-      // user_type,
       username,
       full_name,
       country_code,
@@ -148,7 +146,10 @@ exports.getLikesById = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const user = await authModel.findOne({ "Likes.userid": userId }, { Likes: 1 });
+    const user = await authModel.findOne(
+      { "Likes.userid": userId },
+      { Likes: 1 }
+    );
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -159,7 +160,9 @@ exports.getLikesById = async (req, res) => {
     if (likedMovies && likedMovies.length > 0) {
       return res.status(200).json({ likedMovies: likedMovies });
     } else {
-      return res.status(404).json({ error: "No liked movies found for the user" });
+      return res
+        .status(404)
+        .json({ error: "No liked movies found for the user" });
     }
   } catch (err) {
     console.error(err);
