@@ -8,8 +8,9 @@ import PlayList from "./Playlist";
 import Series from "./Series";
 import Register from "./Register";
 import Login from "./Login";
-import SingleComponent from "./demo";
+
 import LikedContent from "./LikedContent";
+import WishListCon from "./WishContent";
 
 function App() {
   return (
@@ -76,6 +77,19 @@ function App() {
               Children={
                 <>
                   <LikedContent />
+                </>
+              }
+            />
+          }
+        />
+        <Route
+          exact
+          path="/WishContent"
+          element={
+            <Layout
+              Children={
+                <>
+                  <WishListCon />
                 </>
               }
             />

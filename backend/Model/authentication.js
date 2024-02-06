@@ -25,13 +25,8 @@ const authSchema = new mongoose.Schema({
   warningCount: { type: String },
   watchingNow: { type: String },
   wishlist: { type: Array },
-  Likes: [
-    {
-      content_id: String,
-      userid: String,
-    },
-  ],
-  Myrating: { type: Number },
+  Likes: { type: Array },
+  Myrating: { type: String },
   purchasedcontent: {
     Active: [{ purchaseddate: String, expiryddate: String }],
     Booked: [],

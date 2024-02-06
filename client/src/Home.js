@@ -15,6 +15,7 @@ import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import { ImFilm } from "react-icons/im";
 import { AiOutlineDislike } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   // BGBnners,
   // mostvieved,
@@ -292,6 +293,22 @@ export default function Home() {
       setWatchLater(false);
     }
   };
+  let authResponseString = localStorage.getItem("auth_response");
+  let getlocalStorage = JSON.parse(authResponseString);
+
+  const handleAddToWishlist = (idd) => {
+    const updatedWishlist = { content_id: idd, userid: getlocalStorage._id };
+    let initialPostData = { wishlist: updatedWishlist };
+    if (updatedWishlist.userid) {
+      ContentsPageService.PostWishList(initialPostData, getlocalStorage._id)
+        .then((response) => {
+          alert("Movie added to wishlist successfully", response);
+        })
+        .catch((error) => {
+          console.error("Error updating user ", error);
+        });
+    }
+  };
 
   return (
     <>
@@ -344,7 +361,7 @@ export default function Home() {
                               ) ? (
                                 <AddIcon
                                   onClick={() =>
-                                    handleWatchList(
+                                    handleAddToWishlist(
                                       BannerData[currentSlide]?._id
                                     )
                                   }
@@ -537,7 +554,10 @@ export default function Home() {
                         </div>
 
                         <div className="col-md-3 text_White m-auto relativeP slidewatch">
-                          <AddIcon className="addicon" />
+                          <AddIcon
+                            className="addicon"
+                            onClick={() => handleAddToWishlist(ele._id)}
+                          />
                           <button className="p-1 mt-1 fnt12 sliderwatch1  textbold ">
                             watchlist
                           </button>

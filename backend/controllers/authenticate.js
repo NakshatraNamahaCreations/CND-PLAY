@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 exports.makeregister = async (req, res) => {
   let {
     ch_id,
+    // user_type,
     username,
     full_name,
     country_code,
@@ -45,6 +46,7 @@ exports.makeregister = async (req, res) => {
   try {
     let createuser = new authModel({
       ch_id,
+      // user_type,
       username,
       full_name,
       country_code,
@@ -107,41 +109,68 @@ exports.makelogin = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-exports.PostLikes = async (req, res) => {
-  let { content_id, userid } = req.body;
-  let id = req.params.id;
+
+exports.UpdateWishlist = async (req, res) => {
+  const id = req.params.id;
+  const { wishlist, Likes } = req.body;
 
   try {
-    const movie = await authModel.findById(id);
+    let movie = await authModel.findById(id);
 
     if (!movie) {
       return res.status(404).json({ error: "Movie not found" });
     }
 
-    const isLiked = movie.Likes.some((like) => like.content_id === content_id);
-
-    if (isLiked) {
-      const updatedMovie = await authModel.findOneAndUpdate(
-        { _id: id },
-        { $pull: { Likes: { content_id } } },
-        { new: true }
-      );
-
-      return res.status(200).json({ success: true, movie: updatedMovie });
-    } else {
-      const updatedMovie = await authModel.findOneAndUpdate(
-        { _id: id },
-        { $addToSet: { Likes: { content_id, userid } } },
-        { new: true }
-      );
-
-      return res.status(200).json({ success: true, movie: updatedMovie });
+    if (!movie.wishlist) {
+      movie.wishlist = [];
     }
+
+    if (!movie.Likes) {
+      movie.Likes = [];
+    }
+
+    if (
+      (!wishlist || typeof wishlist.content_id === "undefined") &&
+      (!Likes || !Likes || typeof Likes.content_id === "undefined")
+    ) {
+      console.error("Invalid item in the request body:", req.body);
+      return res
+        .status(400)
+        .json({ error: "Invalid item in the request body" });
+    }
+
+    if (wishlist && typeof wishlist.content_id !== "undefined") {
+      const existingWishlistIndex = movie.wishlist.findIndex(
+        (item) => item.content_id === wishlist.content_id
+      );
+
+      if (existingWishlistIndex !== -1) {
+        movie.wishlist.splice(existingWishlistIndex, 1);
+      } else {
+        movie.wishlist.push(wishlist);
+      }
+    }
+
+    if (Likes && typeof Likes.content_id !== "undefined") {
+      const existingLikesIndex = movie.Likes.findIndex(
+        (item) => item && item.content_id === Likes.content_id
+      );
+
+      if (existingLikesIndex !== -1) {
+        movie.Likes.splice(existingLikesIndex, 1);
+      } else {
+        movie.Likes.push(Likes);
+      }
+    }
+
+    const updatedMovie = await movie.save();
+    return res.status(200).json({ success: true, movie: updatedMovie });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 exports.getLikesById = async (req, res) => {
   const userId = req.params.id;
 
@@ -169,7 +198,33 @@ exports.getLikesById = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+exports.getWishlistById = async (req, res) => {
+  const userId = req.params.id;
 
+  try {
+    const user = await authModel.findOne(
+      { "wishlist.userid": userId },
+      { wishlist: 1 }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const WishList = user.wishlist;
+
+    if (WishList && WishList.length > 0) {
+      return res.status(200).json({ WishList: WishList });
+    } else {
+      return res
+        .status(404)
+        .json({ error: "No liked movies found for the user" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 exports.getAlluser = async (req, res) => {
   try {
     const likedMovies = await authModel.find();
@@ -180,21 +235,3 @@ exports.getAlluser = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-// findemovie.plan = plan || findemovie.plan;
-// findemovie.firebase_id = firebase_id || findemovie.firebase_id;
-// findemovie.continueWatching =
-//   continueWatching || findemovie.continueWatching;
-// findemovie.purchasedcontent =
-//   purchasedcontent || findemovie.purchasedcontent;
-// findemovie.Myrating = Myrating || findemovie.Myrating;
-// findemovie.Likes = Likes || findemovie.Likes;
-// findemovie.accountCompleted =
-//   accountCompleted || findemovie.accountCompleted;
-// findemovie.avatar = avatar || findemovie.avatar;
-// findemovie.createdOn = createdOn || findemovie.createdOn;
-// findemovie.district = district || findemovie.district;
-// findemovie.email = email || findemovie.email;
-// findemovie.lastLogin = lastLogin || findemovie.lastLogin;
-// findemovie.messageToken = messageToken || findemovie.messageToken;
-// findemovie.watchingNow = watchingNow || findemovie.watchingNow;
-// findemovie.wishlist = wishlist || findemovie.wishlist;

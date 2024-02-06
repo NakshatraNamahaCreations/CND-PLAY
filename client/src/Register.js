@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const Register = () => {
-  const REACT_API = process.env.REACT_APP_API_URL;
+  // const REACT_API = process.env.REACT_APP_API_URL;
   const [isChecked, setIsChecked] = useState(false);
   const [fullname, setfullname] = useState("");
   const [username, setusername] = useState("");
@@ -26,6 +26,7 @@ const Register = () => {
     gender: "",
     notification_token: "",
     profile_picture: "",
+    agree_terms: "",
     fieldCount: "",
     insertId: "",
     message: "",
@@ -36,7 +37,6 @@ const Register = () => {
     continueWatching: "",
     purchasedcontent: "",
     Myrating: "",
-    Likes: "",
     accountCompleted: "",
     avatar: "",
     createdOn: "",

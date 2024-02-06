@@ -34,7 +34,7 @@ export default function LikedContent() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const [LikedContent, setLikedContent] = useState([]);
+  const [LikedContent, setLikedContent] = useState();
 
   useEffect(() => {
     fetchData();
@@ -49,13 +49,21 @@ export default function LikedContent() {
   };
 
   const fetchData = async () => {
-    let likedmovie = await ContentsPageService.getLikes(getlocalStorage._id);
+    try {
+      let likedmovie = await ContentsPageService.getLikes(getlocalStorage._id);
 
-    let iid = likedmovie.filter((ele) => {
-      ContentsPageService.getByContenId(ele?.content_id);
-    });
-    LikedContent(iid);
+      let iid = await Promise.all(
+        likedmovie?.map(async (ele) => {
+          return await ContentsPageService.getByContenId(ele?.content_id);
+        })
+      );
+
+      setLikedContent(iid);
+    } catch (error) {
+      console.error("Error fetching liked movies:", error);
+    }
   };
+
   const handelnextSlider = (index) => {
     if (index === 0) {
       setCurrentSlide(
@@ -66,9 +74,10 @@ export default function LikedContent() {
 
   return (
     <div className="col-md-12  bg-mg">
-      <div className="row m-auto relativeP">
-        <p className="text_White textbold">Customers also watched</p>
-
+      <div className="row m-auto">
+        <p className="text_White textbold mt-5 mb-5">Liked Contents</p>
+      </div>
+      <div className="row m-auto   relativeP">
         <button
           onClick={() => handelprevSlider(0)}
           className="slidebtn1 text-white"
@@ -82,7 +91,7 @@ export default function LikedContent() {
           &#10095;
         </button>
 
-        {/* {LikedContent?.slice(currentSlide, currentSlide + 4).map((ele) => (
+        {LikedContent?.slice(currentSlide, currentSlide + 4).map((ele) => (
           <div key={ele.id} className="col-md-3 m-auto  movie-container  ">
             <img
               src={ele.banner}
@@ -126,7 +135,7 @@ export default function LikedContent() {
               </p>
             </div>
           </div>
-        ))} */}
+        ))}
       </div>
       <div className="row m-auto">
         {" "}

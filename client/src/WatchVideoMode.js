@@ -92,29 +92,24 @@ export default function WatchVideoMode() {
     let listOfMovie = await ContentsPageService.fetchContentsList();
     let mostvieved = await ContentsPageService.fetchMostViewList();
 
-    
     setContentData(listOfMovie);
     setMostViewedM(mostvieved);
   };
-  const initialPostData = {
-    content_id: idd,
-    userid: getlocalStorage._id,
-  };
 
-  const handleLikeMovie = () => {
-    if (initialPostData.userid) {
-      ContentsPageService.postLikes(initialPostData, getlocalStorage._id)
+  const handleLikeMovie = (idd) => {
+    const updatedLikes = { content_id: idd, userid: getlocalStorage._id };
+    let initialPostData = { Likes: updatedLikes };
+    if (updatedLikes.userid) {
+      ContentsPageService.PostWishList(initialPostData, getlocalStorage._id)
         .then((response) => {
-          alert("user updated successfully", response);
-          window.location.reload("/");
+          alert("Movie liked successfully", response);
         })
         .catch((error) => {
           console.error("Error updating user ", error);
         });
-    } else {
-      console.error("Error: user.id is undefined");
     }
   };
+
   const handleRatethisMovie = async (Item) => {
     try {
       await ContentsPageService.ContentRating(Item);
@@ -170,11 +165,22 @@ export default function WatchVideoMode() {
     video.pause();
     video.currentTime = 0;
   };
-
+  const handleAddToWishlist = (idd) => {
+    const updatedWishlist = { content_id: idd, userid: getlocalStorage._id };
+    let initialPostData = { wishlist: updatedWishlist };
+    if (updatedWishlist.userid) {
+      ContentsPageService.PostWishList(initialPostData, getlocalStorage._id)
+        .then((response) => {
+          alert("Movie added to wishlist successfully", response);
+        })
+        .catch((error) => {
+          console.error("Error updating user ", error);
+        });
+    }
+  };
   return (
     <div className="col-md-12  bg-mg">
       <div className="col-md-12  ">
-        <Button onClick={handleLikeMovie}>Like</Button>
         {ContentData.filter((ele) => ele._id === idd).map((vid) => {
           return (
             <>
@@ -184,8 +190,8 @@ export default function WatchVideoMode() {
                   width: "100%",
                   height: "100vh",
                   objectFit: "cover",
-                  position: "relative",
-                  zIndex: 3,
+                  // position: "relative",
+                  // zIndex: 3,
                 }}
                 src={vid.video}
                 allowFullScreen
@@ -239,11 +245,17 @@ export default function WatchVideoMode() {
                               </span>
 
                               <span className="col-md-2 m-auto fnt14 watchlist relativeP ">
-                                <AddIcon className="addicons lefts fnt30  " />
+                                <AddIcon
+                                  onClick={() => handleAddToWishlist(vid._id)}
+                                  className="addicons lefts fnt30  "
+                                />
                                 <button className="watch1">Watchlist</button>
                               </span>
                               <span className="col-md-2 m-auto fnt14 detailsList relativeP ">
-                                <ThumbUpAltOutlinedIcon className="addicons fnt30  " />
+                                <ThumbUpAltOutlinedIcon
+                                  onClick={() => handleLikeMovie(vid._id)}
+                                  className="addicons fnt30  "
+                                />
                                 <button className="details like">Like</button>
                               </span>
 

@@ -16,6 +16,9 @@ export default function Header() {
   useEffect(() => {
     fetchData();
   }, []);
+  let authResponseString = localStorage.getItem("auth_response");
+  let getlocalStorage = JSON.parse(authResponseString);
+  // console.log(getlocalStorage.username,"getlocalStorage")
   const [searchToggle, setSearchToggle] = useState(false);
   const [ProfleView, setProfleView] = useState(false);
   const [HandleSearch, setHandleSearch] = useState("");
@@ -147,7 +150,12 @@ export default function Header() {
 
                       <p className="cate">Account & Settings</p>
                       <p className="cate">CND Benifits</p>
-                      <a href="/LikedContent" className="cate">Likes</a>
+                      <a href="/LikedContent" className="cate">
+                        Liked{" "}
+                      </a>
+                      <a href="/WishContent" className="cate">
+                        Your Wishlist
+                      </a>
                       <p className="cate">Sign out</p>
                     </div>
                   </div>
@@ -159,7 +167,7 @@ export default function Header() {
                           <p className="cate">
                             {" "}
                             <AccountCircleIcon className="iconss" />
-                            Hema
+                            {getlocalStorage?.username}
                           </p>
 
                           <p className="cate row ">

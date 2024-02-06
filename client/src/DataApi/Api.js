@@ -16,11 +16,12 @@ const fetchContentsList = async () => {
   }
 };
 const getByContenId = async (idd) => {
+  console.log(idd, "dat");
   try {
-    let listOfMovie = await http.get(`/contents/getbycontentid/:${idd}`);
+    let listOfMovie = await http.get(`/contents/getbycontentid/${idd}`);
 
     if (listOfMovie.status === 200) {
-      return listOfMovie;
+      return listOfMovie.data.data;
     }
   } catch (error) {
     console.error("Error fetching trending list:", error);
@@ -92,6 +93,23 @@ const postLikes = async (data, idd) => {
     },
   });
 };
+const PostWishList = async (data, idd) => {
+  return http.put(`/authenticateRoute/postWishList/${idd}`, data, {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+};
+
+const CountLike = async (idd) => {
+  return http.post(`/contents/countlikes/${idd}`, {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+};
 
 const ContentRating = async (itemid) => {
   try {
@@ -123,8 +141,19 @@ const getLikes = async (id) => {
   try {
     let res = await http.get(`/authenticateRoute/getlikes/${id}`);
     if (res.status === 200) {
-      console.log(res.data.likedMovies);
+      console.log(res.data);
       return res.data.likedMovies;
+    }
+  } catch (error) {
+    console.log("Error fetching trending list:");
+  }
+};
+
+const getWishList = async (id) => {
+  try {
+    let res = await http.get(`/authenticateRoute/getwishlist/${id}`);
+    if (res.status === 200) {
+      return res.data.WishList;
     }
   } catch (error) {
     console.error("Error fetching trending list:", error);
@@ -154,6 +183,9 @@ const ContentsPageService = {
   getByContenId,
   getLikes,
   getAllUSer,
+  CountLike,
+  PostWishList,
+  getWishList,
 };
 
 export default ContentsPageService;

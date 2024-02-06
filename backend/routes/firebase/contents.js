@@ -29,8 +29,6 @@ router.get("/getbycontentid/:idd", contents.getbyContentId);
 router.get("/getindiamov", contents.getIndiaMovies);
 router.get("/getupcomingamov", contents.getUpcomingMovies);
 router.get("/gettrendingamov", contents.getTrendingMovies);
-
-
 router.get("/getindiamov", contents.getIndiaMovies);
 router.get("/getupcomingamov", contents.getUpcomingMovies);
 router.get("/gettrendingamov", contents.getTrendingMovies);
