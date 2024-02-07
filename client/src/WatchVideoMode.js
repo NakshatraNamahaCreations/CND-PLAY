@@ -54,7 +54,7 @@ export default function WatchVideoMode() {
   };
   const notifyDislike = () => {
     setlike(true);
-    toast("Got it. we won't recommend this");
+    toast("Content added in your watchlist");
   };
   const handelprevSlider = (index) => {
     if (index === 0) {
@@ -102,7 +102,8 @@ export default function WatchVideoMode() {
     if (updatedLikes.userid) {
       ContentsPageService.PostWishList(initialPostData, getlocalStorage._id)
         .then((response) => {
-          alert("Movie liked successfully", response);
+          // alert("Movie liked successfully", response);
+          notifyLikes();
         })
         .catch((error) => {
           console.error("Error updating user ", error);
@@ -171,7 +172,8 @@ export default function WatchVideoMode() {
     if (updatedWishlist.userid) {
       ContentsPageService.PostWishList(initialPostData, getlocalStorage._id)
         .then((response) => {
-          alert("Movie added to wishlist successfully", response);
+          // alert("Movie added to wishlist successfully", response);
+          notifyDislike();
         })
         .catch((error) => {
           console.error("Error updating user ", error);
@@ -190,21 +192,12 @@ export default function WatchVideoMode() {
                   width: "100%",
                   height: "100vh",
                   objectFit: "cover",
-                  // position: "relative",
-                  // zIndex: 3,
                 }}
                 src={vid.video}
                 allowFullScreen
                 ref={videoRef}
               ></iframe>
-              <div>
-                <button onClick={playPauseToggle}>
-                  {isPlaying ? "Pause" : "Play"}
-                </button>
-                <button onClick={stopVideo}>Stop</button>
-                <p>Current Time: {currentTime}</p>
-              </div>
-              <div>{currentTime}</div>
+
               <div className="row  m-auto">
                 <div className="col-md-10"></div>
               </div>

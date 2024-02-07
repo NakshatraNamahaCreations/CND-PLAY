@@ -35,6 +35,16 @@ exports.getdata = async (req, res) => {
     return res.status(500).json({ error: "Failed to retrieve data" });
   }
 };
+
+exports.getAlldata = async (req, res) => {
+  try {
+    const distictsDocs = await districsModel.find();
+    return res.json({ data: distictsDocs });
+  } catch (error) {
+    console.error("Error retrieving data:", error);
+    return res.status(500).json({ error: "Failed to retrieve data" });
+  }
+};
 exports.update = async (req, res) => {
   try {
     const districidd = req.params.idd;

@@ -88,13 +88,31 @@ exports.makeregister = async (req, res) => {
     return res.status(500).json({ err: "err while creating user" });
   }
 };
+exports.makelogout = async (req, res) => {
+  try {
+    const existingUser = await authModel.findOne({ _id });
 
+    if (!existingUser) {
+      return res.status(400).json({ error: "User does not exist" });
+    }
+
+    if (existingUser.password !== password) {
+      return res.status(400).json({ error: "Incorrect password" });
+    }
+
+    return res.status(200).json({ existingUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 exports.makelogin = async (req, res) => {
   try {
     const { password, username } = req.body;
 
     const existingUser = await authModel.findOne({ username });
-
+    console.log(password, "password");
+    console.log(existingUser.password, "existingUser");
     if (!existingUser) {
       return res.status(400).json({ error: "User does not exist" });
     }
@@ -170,7 +188,92 @@ exports.UpdateWishlist = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+exports.update = async (req, res) => {
+  try {
+    const useridd = req.params.id;
 
+    const {
+      ch_id,
+      username,
+      full_name,
+      country_code,
+      phone,
+      email,
+      date_of_birth,
+      gender,
+      notification_token,
+      profile_picture,
+      password,
+      agree_terms,
+
+      message,
+      serverStatus,
+      warningCount,
+      plan,
+      firebase_id,
+      continueWatching,
+      purchasedcontent,
+      Myrating,
+      Likes,
+      accountCompleted,
+      avatar,
+      createdOn,
+      district,
+      lastLogin,
+      messageToken,
+      watchingNow,
+      wishlist,
+    } = req.body;
+
+    const findemovie = await authModel.findOne({
+      _id: useridd,
+    });
+
+    if (!findemovie) {
+      return res.json({ error: "No such record found" });
+    }
+
+    findemovie.username = username || findemovie.username;
+    findemovie.full_name = full_name || findemovie.full_name;
+    findemovie.country_code = country_code || findemovie.country_code;
+    findemovie.phone = phone || findemovie.phone;
+    findemovie.email = email || findemovie.email;
+    findemovie.date_of_birth = date_of_birth || findemovie.date_of_birth;
+    findemovie.gender = gender || findemovie.gender;
+    findemovie.notification_token =
+      notification_token || findemovie.notification_token;
+    findemovie.password = password || findemovie.password;
+    findemovie.agree_terms = agree_terms || findemovie.agree_terms;
+    findemovie.plan = plan || findemovie.plan;
+    findemovie.firebase_id = firebase_id || findemovie.firebase_id;
+    findemovie.continueWatching =
+      continueWatching || findemovie.continueWatching;
+    findemovie.purchasedcontent =
+      purchasedcontent || findemovie.purchasedcontent;
+    findemovie.Myrating = Myrating || findemovie.Myrating;
+    findemovie.Likes = Likes || findemovie.Likes;
+    findemovie.accountCompleted =
+      accountCompleted || findemovie.accountCompleted;
+    findemovie.avatar = avatar || findemovie.avatar;
+    findemovie.district = district || findemovie.district;
+    findemovie.lastLogin = lastLogin || findemovie.lastLogin;
+    findemovie.watchingNow = watchingNow || findemovie.watchingNow;
+    findemovie.wishlist = wishlist || findemovie.wishlist;
+
+    const updatedUser = await authModel.findOneAndUpdate(
+      { _id: useridd },
+      { $set: findemovie },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "Updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Unable to update the user" });
+  }
+};
 exports.getLikesById = async (req, res) => {
   const userId = req.params.id;
 
@@ -230,6 +333,31 @@ exports.getAlluser = async (req, res) => {
     const likedMovies = await authModel.find();
 
     res.status(200).json({ alluser: likedMovies });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+exports.getByUserId = async (req, res) => {
+  let userid = req.params.idd;
+
+  try {
+    const userdata = await authModel.findOne({ _id: userid });
+    console.log(userdata, "userdata");
+    res.status(200).json({ uniqueuser: userdata });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+exports.getUserByFId = async (req, res) => {
+  let id = req.params.id;
+
+  try {
+    const userdata = await authModel.findOne({ firebase_id: id });
+
+    res.status(200).json({ user: userdata });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });

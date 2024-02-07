@@ -4,28 +4,24 @@ import React, { Component, useState, useEffect, forwardRef } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import RegisterPage from "./DataApi/Register";
-import ContentsPageService from "./DataApi/Api";
 const Register = () => {
   const [isChecked, setIsChecked] = useState(false);
-
-  const location = useLocation();
-  let userid = location?.state || null;
-
   const initialRegisterData = {
     ch_id: "1",
-    full_name: "",
-    username: "",
-    password: "",
-    confirm_password: "",
+    full_name: fullname,
+    username: username,
+    password: password,
+    confirm_password: confirmpas,
     agree_terms: false,
     country_code: "",
-    phone: "",
-    email: "",
+    phone: Phone,
+    confirmpas: confirmpas,
+    email: Email,
     date_of_birth: "",
-    gender: "",
+    gender: gender,
     notification_token: "",
     profile_picture: "",
-    agree_terms: "",
+    agree_terms: isChecked,
     fieldCount: "",
     insertId: "",
     message: "",
@@ -33,39 +29,37 @@ const Register = () => {
     warningCount: "",
     plan: "",
     firebase_id: "",
+    continueWatching: "",
     purchasedcontent: "",
+    Myrating: "",
     accountCompleted: "",
     avatar: "",
     createdOn: "",
-    district: "",
+    district: district,
     lastLogin: "",
     messageToken: "",
     watchingNow: "",
+    wishlist: "",
   };
-  const [register_data, set_register_data] = useState(initialRegisterData);
-
-  const [Districtsdata, setDistrictsdata] = useState();
-  const [UserData, setUserData] = useState();
-
+  const location = useLocation();
+  let id = location.state ? location.state.idd : null;
+  const [register_data, set_register_data] =
+    React.useState(initialRegisterData);
+    const handleChange = (event) => {
+      const { name, value } = event.target;
+      set_register_data({ ...register_data, [name]: value });
+    };
   const handleCheckboxClick = (event) => {
     const { name, value } = event.target;
     set_register_data({ ...register_data, [name]: !isChecked });
     setIsChecked(!isChecked);
   };
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    set_register_data({ ...register_data, [name]: value });
-  };
 
   const handleRegister = () => {
-    if (
-      !register_data.email ||
-      !register_data.username ||
-      !register_data.password
-    ) {
+    if (!fullname || !username || !password || !confirmpas) {
       return alert("Please enter all fileds");
     }
-    RegisterPage.Register(register_data)
+    RegisterPage.Register(initialRegisterData)
       .then((response) => {
         alert("Sign Up Successful!");
         window.location.href = "/";
@@ -75,53 +69,98 @@ const Register = () => {
       });
   };
 
-  const handleUpdate = async () => {
-    if (userid?.idd) {
-      RegisterPage.update(register_data, userid?.idd)
-        .then((response) => {
-          alert("User updated successfully", response);
-          window.location.assign("/Profile");
-        })
-        .catch((error) => {
-          console.error("Error updating user ", error);
-        });
+  const fetchData = async () => {
+    let userdata = await RegisterPage.GetUserById(userid?.idd);
+
+    setUpdatedData(userdata);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let userdata = await RegisterPage.GetUserById(userid?.idd);
+      console.log(userdata);
+      setUpdatedData(userdata);
+    };
+    const Userdata = fetchData;
+    setClientsName(Userdata.clientsName);
+    setBusinessName(Userdata.clientsBrand);
+    setClientsContact1(Userdata.ClientsContactNumber1);
+    setClientsContact2(Userdata.ClientsContactNumber2);
+    setClientsEmail(Userdata.ClientsEmail);
+    setsetClientAddress(Userdata.ClientAddress);
+    setPincode(Userdata.Pincode);
+    setZone(Userdata.Zone);
+  }, [userid?.idd]);
+
+  const AddClientsData = async (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("clientsName", clientName);
+    formData.append("clientsBrand", businessName);
+    formData.append("ClientsContactNumber1", clientsContact1);
+    formData.append("ClientsContactNumber2", clientsContact2);
+    formData.append("ClientsEmail", clientsEmail);
+    formData.append("ClientAddress", ClientAddress);
+    formData.append("Pincode", pincode);
+    formData.append("Zone", zone);
+    formData.append("ClientImage", clientImage);
+
+    try {
+      const config = {
+        url: "/Client/clients/addclient",
+        baseURL: ApiURL,
+        headers: { "Content-Type": "multipart/form-data" },
+        method: "post",
+        data: formData,
+      };
+
+      const response = await axios(config);
+
+      if (response.status === 200) {
+        alert("Clients added");
+        window.location.href = "/ClientsManagement";
+      }
+    } catch (err) {
+      console.log("Failed to add clients");
     }
   };
-  useEffect(() => {
-    const fetchData2 = async () => {
-      let Districtsdata = await RegisterPage.getAllDistricts();
-      setDistrictsdata(Districtsdata);
+
+  const updateclient = async () => {
+    const requestData = {
+      clientsName: clientName,
+      clientsBrand: businessName,
+      ClientsContactNumber1: clientsContact1,
+      ClientsContactNumber2: clientsContact2,
+      ClientsEmail: clientsEmail,
+      ClientAddress: ClientAddress,
+      Pincode: pincode,
+      Zone: zone,
+      ClientImage: clientImage,
     };
 
-    const fetchData = async () => {
-      try {
-        const userDataResponse = await RegisterPage.GetUserById(userid?.idd);
+    try {
+      const config = {
+        url: `/Client/clients/updateclient/${id}`,
+        baseURL: ApiURL,
+        headers: { "Content-Type": "application/json" },
+        method: "put",
+        data: requestData,
+      };
 
-        if (
-          userid?.idd &&
-          userid?.isEditProfile === "edit" &&
-          userDataResponse
-        ) {
-          set_register_data({
-            ...register_data,
-            email: userDataResponse.email || "",
-            phone: userDataResponse.phone || "",
-            full_name: userDataResponse.full_name || "",
-            username: userDataResponse.username || "",
-            date_of_birth: userDataResponse.date_of_birth || "",
-            gender: userDataResponse.gender || "",
-            agree_terms: userDataResponse.agree_terms || false,
-            district: userDataResponse.district || "",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      const response = await axios(config);
+
+      if (response.status === 200) {
+        alert("Clients updated successfully");
+        window.location.href = "/ClientsManagement";
       }
-    };
-    fetchData2();
-    fetchData();
-  }, [userid?.idd, userid?.isEditProfile]);
-
+    } catch (err) {
+      console.error("Failed to update clients", err);
+      console.log(
+        "Failed to update clients. Please check the console for details."
+      );
+    }
+  };
+  console.log(register_data, "register_data");
   return (
     <div className="w-100 bg-mg " style={{ height: "100vh" }}>
       <div className="row w-100 mx-0">
@@ -143,7 +182,6 @@ const Register = () => {
                   id="full_name"
                   name="full_name"
                   placeholder="Full Name"
-                  value={register_data?.full_name}
                   onChange={handleChange}
                 />
               </div>
@@ -154,7 +192,6 @@ const Register = () => {
                   id="username"
                   name="username"
                   placeholder="Username"
-                  value={register_data?.username}
                   onChange={handleChange}
                 />
               </div>
@@ -163,55 +200,30 @@ const Register = () => {
                   type="Email"
                   className="form-control form-control-lg"
                   id="Email"
-                  name="email"
+                  name="Email"
                   placeholder="Email"
-                  value={register_data?.email}
                   onChange={handleChange}
                 />
               </div>
               <div className="form-group col-md-6 mt-2">
-                <select
-                  className="content_section_data form-select p-2"
+                <input
+                  type="gender"
+                  className="form-control form-control-lg"
+                  id="gender"
                   name="gender"
-                  defaultValue={register_data?.gender}
+                  placeholder="gender"
                   onChange={handleChange}
-                >
-                  <option value=""> - Select Gender - </option>
-                  <option
-                    selected={register_data?.gender === "Female" ? true : false}
-                    value="Female"
-                  >
-                    Female
-                  </option>
-
-                  <option
-                    selected={register_data?.gender === "Male" ? true : false}
-                    value="Male"
-                  >
-                    Male
-                  </option>
-
-                  <option
-                    selected={register_data?.gender === "Other" ? true : false}
-                    value="Other"
-                  >
-                    Other
-                  </option>
-                </select>
+                />
               </div>
               <div className="form-group col-md-6 mt-2">
-                <select
-                  className="content_section_data form-select p-2"
+                <input
+                  type="district"
+                  className="form-control form-control-lg"
+                  id="district"
                   name="district"
-                  defaultValue={register_data?.district}
+                  placeholder="district"
                   onChange={handleChange}
-                >
-                  <option value=""> - Select District - </option>
-                  {Districtsdata &&
-                    Districtsdata?.map((item, index) => (
-                      <option value={item.name}>{item.name}</option>
-                    ))}
-                </select>
+                />
               </div>
               <div className="form-group col-md-6 mt-2">
                 <input
@@ -221,7 +233,6 @@ const Register = () => {
                   name="password"
                   placeholder="Password"
                   onChange={handleChange}
-                  value={register_data?.password}
                 />
               </div>
               <div className="form-group col-md-6 mt-2">
@@ -232,7 +243,6 @@ const Register = () => {
                   name="confirm_password"
                   placeholder="Confirm Password"
                   onChange={handleChange}
-                  value={register_data?.confirm_password}
                 />
               </div>
               <div className="form-group col-md-6 mt-2">
@@ -243,10 +253,9 @@ const Register = () => {
                   name="phone"
                   placeholder="Phone"
                   onChange={handleChange}
-                  value={register_data?.phone}
                 />
               </div>
-              <div className="mb-4 mt-4">
+              <div className="mb-4">
                 <div className="form-check">
                   <label className="form-check-label text-muted">
                     <input
@@ -265,23 +274,13 @@ const Register = () => {
                 </div>
               </div>
               <div className="mt-3 row m-auto">
-                {userid?.isEditProfile !== "edit" ? (
-                  <button
-                    className="btn col-md-5 m-auto  btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                    onClick={handleRegister}
-                    type="button"
-                  >
-                    SIGN UP
-                  </button>
-                ) : (
-                  <button
-                    className="btn col-md-5 m-auto  btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                    onClick={handleUpdate}
-                    type="button"
-                  >
-                    Save Changes
-                  </button>
-                )}
+                <button
+                  className="btn col-md-5 m-auto  btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                  onClick={handleRegister}
+                  type="button"
+                >
+                  SIGN UP
+                </button>
               </div>
               <div className="text-center mt-4 font-weight-light">
                 <span className="text_light">Already have an account? </span>

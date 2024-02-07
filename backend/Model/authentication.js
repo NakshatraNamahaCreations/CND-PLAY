@@ -10,6 +10,7 @@ const authSchema = new mongoose.Schema({
   email: { type: String },
   date_of_birth: { type: String },
   gender: { type: String },
+  district: { String },
   notification_token: { type: String },
   plan: { type: String },
   profile_picture: { type: String },
@@ -26,13 +27,13 @@ const authSchema = new mongoose.Schema({
   watchingNow: { type: String },
   wishlist: { type: Array },
   Likes: { type: Array },
-  Myrating: { type: String },
+
   purchasedcontent: {
     Active: [{ purchaseddate: String, expiryddate: String }],
     Booked: [],
     Expired: [{ content_id: String }],
   },
-  continueWatching: { type: [] },
+  continueWatching: { type: Array },
   firebase_id: { type: String },
 });
 

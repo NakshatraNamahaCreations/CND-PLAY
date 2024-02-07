@@ -11,6 +11,9 @@ import ContentsPageService from "./DataApi/Api";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect } from "react";
+import RegisterPage from "./DataApi/Register";
+import { Link } from "react-router-dom";
+
 export default function Header() {
   const location = useLocation();
   useEffect(() => {
@@ -48,6 +51,19 @@ export default function Header() {
     setLanguageData(LanguageWise);
   };
 
+  const handleLogout = () => {
+    if (getlocalStorage._id) {
+      RegisterPage.Logout(getlocalStorage._id)
+        .then((response) => {
+          alert("you Loged out", response);
+          localStorage.removeItem("auth_response");
+          window.location.href = "/";
+        })
+        .catch((error) => {
+          console.error("Error updating user ", error);
+        });
+    }
+  };
   return (
     <Navbar className="row m-auto p-0" bg="dark">
       <Container>
@@ -105,7 +121,9 @@ export default function Header() {
               </a>
             </Navbar.Text>
             <Navbar.Text className="text_White m-auto fs_15 me-3">
-              Musics
+              <a className="text_White" href="/Music">
+                Musics
+              </a>
             </Navbar.Text>
           </Nav>
         </>
@@ -151,12 +169,14 @@ export default function Header() {
                       <p className="cate">Account & Settings</p>
                       <p className="cate">CND Benifits</p>
                       <a href="/LikedContent" className="cate">
-                        Liked{" "}
+                        <span className="cate">My Liked</span>
                       </a>
                       <a href="/WishContent" className="cate">
-                        Your Wishlist
+                        <span className="cate"> My Wishlist</span>
                       </a>
-                      <p className="cate">Sign out</p>
+                      <p onClick={handleLogout} className="cate">
+                        <span className="cate"> Sign out</span>
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -165,9 +185,11 @@ export default function Header() {
                       <div className="row">
                         <div className="col-md-10">
                           <p className="cate">
-                            {" "}
-                            <AccountCircleIcon className="iconss" />
-                            {getlocalStorage?.username}
+                            <a href="/Profile" className="cate">
+                              {" "}
+                              <AccountCircleIcon className="iconss cate" />
+                            </a>
+                            <span> {getlocalStorage?.username}</span>
                           </p>
 
                           <p className="cate row ">

@@ -1,37 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import AddIcon from "@mui/icons-material/Add";
-import TheatersIcon from "@mui/icons-material/Theaters";
-import ShareIcon from "@mui/icons-material/Share";
-import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ContentsPageService from "./DataApi/Api";
 import Footer from "./footer";
-import IndiaMoviePageService from "./DataApi/indiaMovieApi";
+import musicsPageService from "./DataApi/MusicApi";
 import { Link, useNavigate } from "react-router-dom";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { IoInformationCircleOutline } from "react-icons/io5";
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-import CelebrationOutlinedIcon from "@mui/icons-material/CelebrationOutlined";
-import DownloadForOfflineOutlinedIcon from "@mui/icons-material/DownloadForOfflineOutlined";
-import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
-import { ImFilm } from "react-icons/im";
-import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
-export default function Movies() {
+
+export default function MusicComponent() {
   const [LatestReleased, setLatestReleased] = useState([]);
   const [Banners, setBanners] = useState([]);
-  const [IndiaMovies, setIndiaMovies] = useState([]);
-  const [UpcomingMovies, setUpcomingMovies] = useState([]);
-  const [TrendingMovies, setTrendingMovies] = useState([]);
-  const [IndiaMoviesIndex, setIndiaMoviesIndex] = useState(0);
+  const [IndiaMusic, setIndiaMusic] = useState([]);
+  const [UpcomingMusic, setUpcomingMusic] = useState([]);
+  const [TrendingMusic, setTrendingMusic] = useState([]);
+  const [IndiaMusicIndex, setIndiaMusicIndex] = useState(0);
   const [TrendingIndex, setTrendingIndex] = useState(0);
   const [Upcomingdata, setUpcomingdata] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [latestreleased, setlatestreleased] = useState(0);
   const [movieview, setmovieview] = useState(false);
-  const [SelectedMovie, setSelectedMovie] = useState(false);
+  // const [SelectedMovie, setSelectedMovie] = useState(false);
 
   const nextSlide = () => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % (Banners?.length - 2));
@@ -71,18 +58,18 @@ export default function Movies() {
       );
     }
     if (index === 1) {
-      setIndiaMoviesIndex(
-        (prevSlide) => (prevSlide + 1) % (IndiaMovies?.length - 5)
+      setIndiaMusicIndex(
+        (prevSlide) => (prevSlide + 1) % (IndiaMusic?.length - 5)
       );
     }
     if (index === 2) {
       setUpcomingdata(
-        (prevSlide) => (prevSlide + 1) % (UpcomingMovies?.length - 5)
+        (prevSlide) => (prevSlide + 1) % (UpcomingMusic?.length - 5)
       );
     }
     if (index === 3) {
       setTrendingIndex(
-        (prevSlide) => (prevSlide + 1) % (TrendingMovies?.length - 5)
+        (prevSlide) => (prevSlide + 1) % (TrendingMusic?.length - 5)
       );
     }
   };
@@ -94,24 +81,23 @@ export default function Movies() {
       );
     }
     if (index === 1) {
-      setIndiaMoviesIndex((prevSlide) =>
-        prevSlide > 1 ? prevSlide - 1 : IndiaMovies?.length - 6
+      setIndiaMusicIndex((prevSlide) =>
+        prevSlide > 1 ? prevSlide - 1 : IndiaMusic?.length - 6
       );
     }
     if (index === 2) {
       setUpcomingdata((prevSlide) =>
-        prevSlide > 0 ? prevSlide - 1 : UpcomingMovies?.length - 6
+        prevSlide > 0 ? prevSlide - 1 : UpcomingMusic?.length - 6
       );
     }
     if (index === 3) {
       setTrendingIndex((prevSlide) =>
-        prevSlide > 0 ? prevSlide - 1 : TrendingMovies?.length - 6
+        prevSlide > 0 ? prevSlide - 1 : TrendingMusic?.length - 6
       );
     }
   };
   const handleMovieView = (Item) => {
     setmovieview(true);
-    // setSelectedMovie(movie);
     navigate("/WatchVideoMode", { state: { id: Item } });
   };
 
@@ -119,16 +105,17 @@ export default function Movies() {
     fetchData();
   }, []);
   const fetchData = async () => {
-    let listOfMovie = await ContentsPageService.fetchContentsList();
-    let latestreleased = await ContentsPageService.getLatestreleased();
-    let IndiaMovi = await IndiaMoviePageService.fetchIndiaMoviesList();
-    let Upcomingdata = await IndiaMoviePageService.fetchUpcomingList();
-    let Trendingdata = await IndiaMoviePageService.fetchTrendingList();
+    let listOfMovie = await musicsPageService.fetchContentsListmusics();
+    let latestreleased = await musicsPageService.getLatestreleasedmusics();
+    let IndiaMovi = await musicsPageService.fetchIndiamusicsList();
+    let Upcomingdata = await musicsPageService.fetchUpcomingListmusics();
+    let Trendingdata = await musicsPageService.fetchTrendingListmusics();
+
     setLatestReleased(latestreleased);
-    setIndiaMovies(IndiaMovi);
+    setIndiaMusic(IndiaMovi);
     setBanners(listOfMovie);
-    setUpcomingMovies(Upcomingdata);
-    setTrendingMovies(Trendingdata);
+    setUpcomingMusic(Upcomingdata);
+    setTrendingMusic(Trendingdata);
   };
 
   return (
@@ -171,11 +158,12 @@ export default function Movies() {
               )}
             </div>
           )}
+
           <div className="row m-auto mt-3 ">
             {LatestReleased.length > 0 && (
               <div className="row">
                 <h4 className="row text_White m-auto mb-3 ">
-                  Latest Released Movies{" "}
+                  Latest Released Music{" "}
                 </h4>{" "}
                 <div className="row m-auto relativeP">
                   {LatestReleased?.length > 6 && (
@@ -213,12 +201,12 @@ export default function Movies() {
                 </div>
               </div>
             )}
-            {IndiaMovies.length > 0 && (
+            {IndiaMusic.length > 0 && (
               <div className="row">
                 <div className="row m-auto mt-3 ">
-                  <h4 className="row text_White m-auto mb-3 ">India Movies </h4>{" "}
+                  <h4 className="row text_White m-auto mb-3 ">India Music </h4>{" "}
                   <div className="row m-auto relativeP">
-                    {IndiaMovies?.length > 6 && (
+                    {IndiaMusic?.length > 6 && (
                       <>
                         <button
                           onClick={() => handelprevSlider(1)}
@@ -234,9 +222,9 @@ export default function Movies() {
                         </button>
                       </>
                     )}
-                    {IndiaMovies?.slice(
-                      IndiaMoviesIndex,
-                      IndiaMoviesIndex + 6
+                    {IndiaMusic?.slice(
+                      IndiaMusicIndex,
+                      IndiaMusicIndex + 6
                     ).map((ele) => (
                       <div className="col-md-2">
                         <img
@@ -254,14 +242,14 @@ export default function Movies() {
                 </div>
               </div>
             )}
-            {UpcomingMovies.length > 0 && (
+            {UpcomingMusic.length > 0 && (
               <div className="row">
                 <div className="row m-auto mt-3 ">
                   <h4 className="row text_White m-auto mb-3 ">
-                    Upcoming Movies{" "}
+                    Upcoming Music{" "}
                   </h4>{" "}
                   <div className="row m-auto relativeP">
-                    {UpcomingMovies?.length > 6 && (
+                    {UpcomingMusic?.length > 6 && (
                       <>
                         <button
                           onClick={() => handelprevSlider(2)}
@@ -277,7 +265,7 @@ export default function Movies() {
                         </button>
                       </>
                     )}
-                    {UpcomingMovies?.slice(Upcomingdata, Upcomingdata + 6).map(
+                    {UpcomingMusic?.slice(Upcomingdata, Upcomingdata + 6).map(
                       (ele) => (
                         <div className="col-md-2">
                           <img
@@ -296,14 +284,14 @@ export default function Movies() {
                 </div>
               </div>
             )}
-            {TrendingMovies.length > 0 && (
+            {TrendingMusic.length > 0 && (
               <div className="row">
                 <div className="row m-auto mt-3 ">
                   <h4 className="row text_White m-auto mb-3 ">
-                    Trending Movies{" "}
+                    Trending Music{" "}
                   </h4>{" "}
                   <div className="row m-auto relativeP">
-                    {TrendingMovies?.length > 6 && (
+                    {TrendingMusic?.length > 6 && (
                       <>
                         <button
                           onClick={() => handelprevSlider(3)}
@@ -319,22 +307,21 @@ export default function Movies() {
                         </button>
                       </>
                     )}
-                    {TrendingMovies?.slice(
-                      TrendingIndex,
-                      TrendingIndex + 6
-                    ).map((ele) => (
-                      <div className="col-md-2">
-                        <img
-                          height={190}
-                          width={180}
-                          className=" borderRa"
-                          key={ele?._id}
-                          onClick={() => handleMovieView(ele?._id)}
-                          src={ele?.banner}
-                          alt=""
-                        />{" "}
-                      </div>
-                    ))}
+                    {TrendingMusic?.slice(TrendingIndex, TrendingIndex + 6).map(
+                      (ele) => (
+                        <div className="col-md-2">
+                          <img
+                            height={190}
+                            width={180}
+                            className=" borderRa"
+                            key={ele?._id}
+                            onClick={() => handleMovieView(ele?._id)}
+                            src={ele?.banner}
+                            alt=""
+                          />{" "}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -344,9 +331,9 @@ export default function Movies() {
         </div>
         {LatestReleased &&
           Banners &&
-          IndiaMovies &&
-          UpcomingMovies &&
-          TrendingMovies && <div className="col-md-12">Movies Not Found</div>}
+          IndiaMusic &&
+          UpcomingMusic &&
+          TrendingMusic && <div className="col-md-12">Music Not Found</div>}
       </div>
     </>
   );

@@ -1,12 +1,12 @@
 import http from "../http-common.function";
 
-const fetchContentsListSeries = async () => {
+const fetchContentsListmusics = async () => {
   try {
     let listOfMovie = await http.get(`/contents/getdata`);
 
     if (listOfMovie.status === 200) {
       const onlyMovieList = listOfMovie.data.data.filter(
-        (movie) => movie.section === "series"
+        (movie) => movie.section === "musics"
       );
       return onlyMovieList;
     }
@@ -15,54 +15,54 @@ const fetchContentsListSeries = async () => {
   }
 };
 
-const fetchIndiaSeriesList = async () => {
+const fetchIndiamusicsList = async () => {
   try {
     let res = await http.get(`/contents/getindiamov`);
 
     if (res.status === 200) {
-      const onlyseriesList = res.data.data.filter(
-        (series) => series.section === "series"
+      const onlymusicsList = res.data.data.filter(
+        (musics) => musics.section === "musics"
       );
 
-      return onlyseriesList;
+      return onlymusicsList;
     }
   } catch (error) {
     console.error("Error fetching trending list:", error);
   }
 };
-const fetchUpcomingListSeries = async () => {
+const fetchUpcomingListmusics = async () => {
   try {
     let res = await http.get(`/contents/getupcomingamov`);
-    const onlyseriesList = res.data.data.filter(
-      (series) => series.section === "series"
+    const onlymusicsList = res.data.data.filter(
+      (musics) => musics.section === "musics"
     );
 
     if (res.status === 200) {
-      return onlyseriesList;
+      return onlymusicsList;
     }
   } catch (error) {
     console.error("Error fetching trending list:", error);
   }
 };
-const fetchTrendingListSeries = async () => {
+const fetchTrendingListmusics = async () => {
   try {
     let res = await http.get(`/contents/gettrendingamov`);
-    const onlyseriesList = res.data.data.filter(
-      (series) => series.section === "series"
+    const onlymusicsList = res.data.data.filter(
+      (musics) => musics.section === "musics"
     );
     if (res.status === 200) {
-      return onlyseriesList;
+      return onlymusicsList;
     }
   } catch (error) {
     console.error("Error fetching trending list:", error);
   }
 };
 
-const getLatestreleasedSeries = async () => {
+const getLatestreleasedmusics = async () => {
   try {
     let res = await http.get(`/contents/latestreleased`);
     const onlyMovieList = res.data.content.filter(
-      (movie) => movie.section === "series"
+      (movie) => movie.section === "musics"
     );
     if (res.status === 200) {
       return onlyMovieList;
@@ -71,12 +71,12 @@ const getLatestreleasedSeries = async () => {
     console.error("Error fetching trending list:", error);
   }
 };
-const SeriesPageService = {
-  fetchIndiaSeriesList,
-  fetchUpcomingListSeries,
-  fetchTrendingListSeries,
-  getLatestreleasedSeries,
-  fetchContentsListSeries,
+const musicsPageService = {
+  fetchIndiamusicsList,
+  fetchUpcomingListmusics,
+  fetchTrendingListmusics,
+  getLatestreleasedmusics,
+  fetchContentsListmusics,
 };
 
-export default SeriesPageService;
+export default musicsPageService;

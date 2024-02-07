@@ -1,23 +1,18 @@
 import { Link } from "react-router-dom";
 import React, { Component, useState, useEffect, forwardRef } from "react";
-// import { useDispatch, useSelector, shallowEqual } from "react-redux";
-// import Files from "react-files";
-// import { makeLogin } from "./actions/index";
-// import { toast } from "react-toastify";
+import RegisterPage from "./DataApi/Register";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 const Login = forwardRef((props, ref) => {
   const [isChecked, setIsChecked] = useState(false);
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
+
   const initialLoginData = {
-    username: username,
-    password: password,
+    username: "",
+    password: "",
     remember_login: false,
   };
 
   const [login_data, set_login_data] = React.useState(initialLoginData);
-  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -29,47 +24,21 @@ const Login = forwardRef((props, ref) => {
     set_login_data({ ...login_data, [name]: !isChecked });
     setIsChecked(!isChecked);
   };
-  const handleSubmitNewLoginCreateFunc = async () => {
+  const handleLogin = async () => {
     try {
-      const config = {
-        url: "http://localhost:8081/api/authenticateRoute/makelogin",
-        headers: { "Content-Type": "application/json" },
-        method: "post",
-        data: initialLoginData,
-      };
+      const response = await RegisterPage.Login(login_data);
+      alert("Logged in Successfully!");
 
-      const res = await axios(config);
+      localStorage.setItem(
+        "auth_response",
+        JSON.stringify(response.data.existingUser)
+      );
 
-      if (res.status === 200) {
-        alert("Logged in Successfully!");
-        localStorage.setItem(
-          "auth_response",
-          JSON.stringify(res.data.existingUser)
-        );
-        window.location.href = "/home";
-      }
+      window.location.href = "/home";
     } catch (error) {
-      console.log(error || "Unknown error occurred");
+      console.error(error || "Unknown error occurred");
     }
   };
-
-  // const handleSubmitNewLoginCreateFunc = () => {
-  // 	// dispatch(makeLogin(login_data))
-  // 	// .then(data => {
-  //   //   sessionStorage.setItem("auth_response", JSON.stringify(data));
-  // 	// 	setSubmitted(true);
-  //   //   window.location.href = "/dashboard";
-  // 	// }).catch(e => {
-  // 	// 	console.log(e);
-  // 	// });
-  //   if(login_data.username === 'admin@cndplay' && login_data.password === 'Rohit@CND1') {
-  //     sessionStorage.setItem("auth_response", JSON.stringify({status: 1, uid: 1, username: login_data.username, user_type: login_data.user_type}));
-  //     setSubmitted(true);
-  //     window.location.href = "/dashboard";
-  //   } else {
-  //     window.location.href = "/login";
-  //   }
-  // }
 
   return (
     <div className="w-100 bg-mg " style={{ height: "100vh" }}>
@@ -95,7 +64,8 @@ const Login = forwardRef((props, ref) => {
                     placeholder="Username"
                     size="lg"
                     className="form-control   h-auto"
-                    onChange={(e) => setusername(e.target.value)}
+                    value={login_data.username}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="form-group mb-3 d-flex search-field">
@@ -105,14 +75,15 @@ const Login = forwardRef((props, ref) => {
                     placeholder="Password"
                     size="lg"
                     className="form-control h-auto"
-                    onChange={(e) => setpassword(e.target.value)}
+                    value={login_data.password}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="mt-3 row m-auto">
                   <button
                     type="button"
                     className="btn row  btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                    onClick={handleSubmitNewLoginCreateFunc}
+                    onClick={handleLogin}
                   >
                     SIGN IN
                   </button>

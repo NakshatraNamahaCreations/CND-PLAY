@@ -11,6 +11,8 @@ import Login from "./Login";
 
 import LikedContent from "./LikedContent";
 import WishListCon from "./WishContent";
+import Profile from "./Profile";
+import MusicComponent from "./Music";
 
 function App() {
   return (
@@ -55,7 +57,6 @@ function App() {
             />
           }
         />
-
         <Route
           exact
           path="/WatchVideoMode"
@@ -94,8 +95,33 @@ function App() {
               }
             />
           }
+        />{" "}
+        <Route
+          exact
+          path="/Profile"
+          element={
+            <Layout
+              Children={
+                <>
+                  <Profile />
+                </>
+              }
+            />
+          }
         />
-
+        <Route
+          exact
+          path="/Music"
+          element={
+            <Layout
+              Children={
+                <>
+                  <MusicComponent />
+                </>
+              }
+            />
+          }
+        />
         <Route path="/Playlist" element={<PlayList />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/" element={<Login />} />

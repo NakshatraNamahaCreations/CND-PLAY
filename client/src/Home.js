@@ -9,26 +9,24 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-import CelebrationOutlinedIcon from "@mui/icons-material/CelebrationOutlined";
-import DownloadForOfflineOutlinedIcon from "@mui/icons-material/DownloadForOfflineOutlined";
+
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import { ImFilm } from "react-icons/im";
-import { AiOutlineDislike } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import IndiaMoviePageService from "./DataApi/indiaMovieApi";
 import {
   // BGBnners,
   // mostvieved,
-  mostvieved2,
+  // TrendingMovies,
   RecommendedMovies,
-  BGBnners2,
-  BGBnners3,
+  // BGBnners2,
+  TrendingMovies,
   LanguageWise,
   // ContentData,
 } from "./JsonData";
 import Footer from "./footer";
 import ContentsPageService from "./DataApi/Api";
-
+import SeriesPageService from "./DataApi/SeriesApi";
 import CheckIcon from "@mui/icons-material/Check";
 import { useDispatch, useSelector } from "react-redux";
 import { setWatchListId, removeListId } from "./DataStore.js/Slice/Watchlist";
@@ -46,6 +44,8 @@ export default function Home() {
   const [toptenMovies, setToptenMovies] = useState(0);
   const [videoProgress, setVideoProgress] = useState({});
   const [ContentData, setContentData] = useState([]);
+  const [TrendingMovies, setTrendingMovies] = useState([]);
+  const [SeriesData, setSeriesData] = useState([]);
   const [mostViewedM, setMostViewedM] = useState([]);
   const [BannerData, setBannerData] = useState([]);
   // handle banner
@@ -108,7 +108,7 @@ export default function Home() {
     };
   }, [restartAnimation, currentSlide, animateLogo]);
 
-  const visibleCards = BGBnners2?.slice(currentSlides, currentSlides + 4);
+  const visibleCards = SeriesData?.slice(currentSlides, currentSlides + 4);
 
   const handelnextSlider = (index) => {
     if (index === 0) {
@@ -133,11 +133,13 @@ export default function Home() {
     }
 
     if (index === 4) {
-      setCurrentSlides((prevSlide) => (prevSlide + 3) % (BGBnners2.length - 3));
+      setCurrentSlides(
+        (prevSlide) => (prevSlide + 3) % (SeriesData.length - 3)
+      );
     }
     if (index === 5) {
       setMostViewedSlidesData2(
-        (prevSlide) => (prevSlide + 1) % (mostvieved2.length - 4)
+        (prevSlide) => (prevSlide + 1) % (TrendingMovies.length - 4)
       );
     }
   };
@@ -165,12 +167,12 @@ export default function Home() {
     }
     if (index === 4) {
       setCurrentSlides((prevSlide) =>
-        prevSlide > 3 ? prevSlide - 4 : BGBnners2.length - 4
+        prevSlide > 3 ? prevSlide - 4 : SeriesData.length - 4
       );
     }
     if (index === 5) {
       setMostViewedSlidesData2((prevSlide) =>
-        prevSlide > 0 ? prevSlide - 1 : mostvieved2.length - 3
+        prevSlide > 0 ? prevSlide - 1 : TrendingMovies.length - 3
       );
     }
   };
@@ -250,12 +252,12 @@ export default function Home() {
   useEffect(() => {
     if (!PlayVideo) {
       const intervalId = setInterval(() => {
-        setToptenMovies((prevIndex) => (prevIndex + 1) % BGBnners3.length);
+        setToptenMovies((prevIndex) => (prevIndex + 1) % TrendingMovies.length);
       }, 3000);
 
       return () => clearInterval(intervalId);
     }
-  }, [BGBnners3.length, PlayVideo]);
+  }, [TrendingMovies.length, PlayVideo]);
 
   //  backend Api intigration
 
@@ -263,10 +265,13 @@ export default function Home() {
     let listOfMovie = await ContentsPageService.fetchContentsList();
     let mostvieved = await ContentsPageService.fetchMostViewList();
     let BannerData = await ContentsPageService.getBanerdata();
-
+    let Seriesda = await SeriesPageService.fetchContentsListSeries();
+    let Trendingdata = await IndiaMoviePageService.fetchTrendingList();
+    setSeriesData(Seriesda);
     setContentData(listOfMovie);
     setMostViewedM(mostvieved);
     setBannerData(BannerData);
+    setTrendingMovies(Trendingdata);
   };
   const [views, setViews] = useState();
   const incrementViews = async (Item) => {
@@ -583,83 +588,88 @@ export default function Home() {
             )}
           </div>
         </div>
-        <div className="row mt-3 mb-3  m-auto relativeP">
-          <h6 className="row text_White m-auto mb-3 ">
-            Most Viewed on CND PLAY
-          </h6>
+        {mostViewedM.length > 0 && (
+          <div className="row mt-3 mb-3  m-auto relativeP">
+            <h6 className="row text_White m-auto mb-3 ">
+              Most Viewed on CND PLAY
+            </h6>
 
-          <button
-            onClick={() => handelprevSlider(1)}
-            className="slidebtn1 text-white"
-          >
-            &#10094;
-          </button>
-          <button
-            onClick={() => handelnextSlider(1)}
-            className="slidebtn2 text-white"
-          >
-            &#10095;
-          </button>
-          <div className="row m-auto">
-            {mostViewedM
-              ?.slice(mostViewedSlidesData, mostViewedSlidesData + 4)
-              .map((ele) => (
-                <div
-                  key={ele?.id}
-                  className="col-md-3 m-auto  movie-container  "
-                >
-                  <img
-                    src={ele?.banner}
-                    alt=""
-                    height={140}
-                    className="w-100  borderRa"
-                  />
+            <button
+              onClick={() => handelprevSlider(1)}
+              className="slidebtn1 text-white"
+            >
+              &#10094;
+            </button>
+            <button
+              onClick={() => handelnextSlider(1)}
+              className="slidebtn2 text-white"
+            >
+              &#10095;
+            </button>
+            <div className="row m-auto">
+              {mostViewedM
+                ?.slice(mostViewedSlidesData, mostViewedSlidesData + 4)
+                .map((ele) => (
+                  <div
+                    key={ele?.id}
+                    className="col-md-3 m-auto  movie-container  "
+                  >
+                    <img
+                      src={ele?.banner}
+                      alt=""
+                      height={140}
+                      className="w-100  borderRa"
+                    />
 
-                  <div className="row  m-auto additional-content ">
-                    <div className="row  p-2">
-                      <div className="col-md-6 m-auto text_White ">
-                        <div className="row">
-                          <div className="col-md-6 m-auto">
-                            <Link state={{ id: ele?._id }} to="/WatchVideoMode">
-                              <PlayCircleFilledWhiteIcon className="fnt35 playicon1" />{" "}
-                            </Link>
+                    <div className="row  m-auto additional-content ">
+                      <div className="row  p-2">
+                        <div className="col-md-6 m-auto text_White ">
+                          <div className="row">
+                            <div className="col-md-6 m-auto">
+                              <Link
+                                state={{ id: ele?._id }}
+                                to="/WatchVideoMode"
+                              >
+                                <PlayCircleFilledWhiteIcon className="fnt35 playicon1" />{" "}
+                              </Link>
+                            </div>
+                            <span
+                              className="col-md-6 fnt14  text_White m-auto"
+                              onMouseMove={(e) => handleMouseMove(e, ele?.id)}
+                              onMouseOver={() => handleMouseOver(ele?.id)}
+                            >
+                              Resume
+                            </span>
                           </div>
-                          <span
-                            className="col-md-6 fnt14  text_White m-auto"
-                            onMouseMove={(e) => handleMouseMove(e, ele?.id)}
-                            onMouseOver={() => handleMouseOver(ele?.id)}
-                          >
-                            Resume
-                          </span>
                         </div>
-                      </div>
 
-                      <div className="col-md-3 text_White m-auto relativeP slidewatch">
-                        <AddIcon className="addicon" />
-                        <button className="p-1 mt-1 fnt12 sliderwatch1  textbold ">
-                          watchlist
-                        </button>
-                      </div>
-                      <div className="col-md-3 text_White m-auto relativeP viewmore">
-                        <MoreVertIcon className="addicon" />
-                        <button className="col-md-3 p-1 mt-1 fnt12 slidemore  textbold ">
-                          More
-                        </button>
-                      </div>
+                        <div className="col-md-3 text_White m-auto relativeP slidewatch">
+                          <AddIcon className="addicon" />
+                          <button className="p-1 mt-1 fnt12 sliderwatch1  textbold ">
+                            watchlist
+                          </button>
+                        </div>
+                        <div className="col-md-3 text_White m-auto relativeP viewmore">
+                          <MoreVertIcon className="addicon" />
+                          <button className="col-md-3 p-1 mt-1 fnt12 slidemore  textbold ">
+                            More
+                          </button>
+                        </div>
 
-                      {"  "}
+                        {"  "}
+                      </div>
+                      <p className="fnt12 textbold">{ele?.title}</p>
+                      <p className="fnt12 ">{ele?.duration}</p>
+                      <p className="fnt12 ">
+                        {ele?.subtitle}-{ele?.storyline}
+                      </p>
                     </div>
-                    <p className="fnt12 textbold">{ele?.title}</p>
-                    <p className="fnt12 ">{ele?.duration}</p>
-                    <p className="fnt12 ">
-                      {ele?.subtitle}-{ele?.storyline}
-                    </p>
                   </div>
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
-        </div>
-        <div className="row mt-3 mb-3  m-auto relativeP">
+        )}
+        {/* <div className="row mt-3 mb-3  m-auto relativeP">
           <h6 className="row text_White m-auto mb-3 ">
             {" "}
             CND PLAY Watch In Your language
@@ -694,7 +704,7 @@ export default function Home() {
               )
             )}
           </div>
-        </div>
+        </div> */}
 
         <div className="row mt-3 mb-3  m-auto relativeP">
           <h6 className="row text_White m-auto mb-3 ">
@@ -782,7 +792,7 @@ export default function Home() {
           <button
             onClick={() => handelprevSlider(4)}
             className={`slidebtn1 text-white ${
-              currentSlides === BGBnners2.length - 1 ? "disabled" : ""
+              currentSlides === SeriesData.length - 1 ? "disabled" : ""
             }`}
           >
             &#10094;
@@ -790,7 +800,7 @@ export default function Home() {
           <button
             onClick={() => handelnextSlider(4)}
             className={`slidebtn2 text-white ${
-              (currentSlides === BGBnners2.length) === 0 ? "disabled" : ""
+              (currentSlides === SeriesData.length) === 0 ? "disabled" : ""
             }`}
           >
             &#10095;
@@ -812,11 +822,11 @@ export default function Home() {
                     }`}
                   >
                     <div className="row mb-3">
-                      <img src={image.logo} alt="" height={50} />
+                      <img src={image.poster} alt="" height={50} />
 
                       <div className="col-md-8"></div>
                     </div>
-
+                    {/* 
                     <div className="d-flex mb-3">
                       {image.language?.map((Ele) => {
                         return (
@@ -826,7 +836,7 @@ export default function Home() {
                           </>
                         );
                       })}
-                    </div>
+                    </div> */}
 
                     <div className="row ">
                       <span className="col-md-3  m-auto  text-white ">
@@ -872,7 +882,7 @@ export default function Home() {
             activeIndex={toptenMovies}
             className="col-md-12 videoWidth videoBNr"
           >
-            {BGBnners3.map((Ele, index) => (
+            {TrendingMovies.map((Ele, index) => (
               <Carousel.Item key={index} className="toptenmovie  ">
                 <div className="toptenmovieOverl"> </div>
                 <div className="row informat ">
@@ -914,24 +924,7 @@ export default function Home() {
                                 <ThumbUpAltOutlinedIcon className="addicons fnt30  " />
                                 <button className="details like">Like</button>
                               </span>
-                              {/* <span className="col-md-2 m-auto fnt14 detailsList relativeP ">
-                                <AiOutlineDislike className="addicons lefts fnt30  " />
-                                <button className="details dislike">
-                                  Dislike
-                                </button>
-                              </span> */}
-                              {/* <span className="col-md-2 m-auto fnt14 detailsList relativeP ">
-                                <DownloadForOfflineOutlinedIcon className="addicons fnt30  " />
-                                <button className="details downlaod">
-                                  Dowload Episodes 1
-                                </button>
-                              </span> */}
-                              {/* <span className="col-md-2 m-auto fnt14 detailsList relativeP ">
-                                <CelebrationOutlinedIcon className="addicons fnt30  " />
-                                <button className="details party">
-                                  Watch Party
-                                </button>
-                              </span> */}
+
                               <span className="col-md-2 m-auto fnt14 detailsList relativeP ">
                                 <ShareOutlinedIcon className="addicons fnt30  " />
                                 <button className="details">Share</button>
@@ -958,33 +951,31 @@ export default function Home() {
                       &#10095;
                     </button>
                     <div className="row m-auto mt-1">
-                      {mostvieved2
-                        ?.slice(
-                          mostViewedSlidesData2,
-                          mostViewedSlidesData2 + 3
-                        )
-                        .map((ele, inneindex) => (
-                          <>
-                            <div key={ele?.id} className="col-md-4 m-auto    ">
-                              <div className="row">
-                                <h1 className="col-md-2 index_size text-white">
-                                  {ele?.id}
-                                </h1>
-                                <div
-                                  className="col-md-10"
-                                  style={{ boxShadow: "10px" }}
-                                >
-                                  <img
-                                    src={ele?.movie}
-                                    alt=""
-                                    height={140}
-                                    className="w-100   borderRa"
-                                  />
-                                </div>
+                      {TrendingMovies?.slice(
+                        mostViewedSlidesData2,
+                        mostViewedSlidesData2 + 3
+                      ).map((ele, inneindex) => (
+                        <>
+                          <div key={ele?.id} className="col-md-4 m-auto    ">
+                            <div className="row">
+                              <h1 className="col-md-2 index_size text-white">
+                                {ele?.id}
+                              </h1>
+                              <div
+                                className="col-md-10"
+                                style={{ boxShadow: "10px" }}
+                              >
+                                <img
+                                  src={ele?.banner}
+                                  alt=""
+                                  height={140}
+                                  className="w-100   borderRa"
+                                />
                               </div>
                             </div>
-                          </>
-                        ))}
+                          </div>
+                        </>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -997,13 +988,24 @@ export default function Home() {
                       onMouseLeave={() => setPlayVideo(false)}
                     >
                       <div className="toptenmovieOverl"> </div>
-                      <video
+                      {/* <video
                         muted={!BVolume}
                         autoPlay
                         height={120}
                         className="relativeP videoWidth"
-                        src={Ele?.movivid}
-                      />
+                        src={Ele?.video}
+                      /> */}
+                      <iframe
+                        muted={!BVolume}
+                        autoPlay
+                        title="Video Player"
+                        height={120}
+                        className="relativeP videoWidth"
+                        src={Ele.video}
+                        allowFullScreen
+
+                        // ref={videoRef}
+                      ></iframe>
 
                       <div className="row  m-auto">
                         <div className="bnrvolume col-md-2 ">
