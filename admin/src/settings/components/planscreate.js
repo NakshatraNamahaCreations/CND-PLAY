@@ -11,6 +11,7 @@ const CreatePlansSetupCreate = forwardRef((props, ref) => {
     validity: "",
     amount: "",
     videoQuality: "",
+    device: "",
   };
 
   const [Plan_setup_data, set_Plan_setup_data] = React.useState(
@@ -30,6 +31,8 @@ const CreatePlansSetupCreate = forwardRef((props, ref) => {
         validity: single_Plan_setup_data?.validity,
         amount: single_Plan_setup_data?.amount,
         videoQuality: single_Plan_setup_data?.videoQuality,
+
+        device: single_Plan_setup_data?.device,
       });
     },
   }));
@@ -60,6 +63,7 @@ const CreatePlansSetupCreate = forwardRef((props, ref) => {
       validity: Plan_setup_data?.validity,
       amount: Plan_setup_data?.amount,
       videoQuality: Plan_setup_data?.videoQuality,
+      device: Plan_setup_data?.device,
     })
       .then((response) => {
         if (response.status === 200) {
@@ -175,6 +179,63 @@ const CreatePlansSetupCreate = forwardRef((props, ref) => {
                         </option>
                       </select>
                     </div>
+                    <div className="mb-2 col-md-12">
+                      <label className="form-label">Device Type</label>
+                      <select
+                        className="content_section_data form-select"
+                        name="device"
+                        defaultValue={Plan_setup_data.device}
+                        onChange={handleChange}
+                      >
+                        <option value=""> - Select Device Type - </option>
+                        {Plan_setup_data.planType === "Silver" && (
+                          <option
+                            selected={
+                              Plan_setup_data.device === "mobile" ? true : false
+                            }
+                            value="mobile"
+                          >
+                            Mobile
+                          </option>
+                        )}
+                        {Plan_setup_data.planType === "Gold" && (
+                          <option
+                            selected={
+                              Plan_setup_data.device === "Mobile, TV, Web"
+                                ? true
+                                : false
+                            }
+                            value="Mobile, TV, Web"
+                          >
+                            Mobile, TV, Web
+                          </option>
+                        )}
+
+                        {Plan_setup_data.planType === "Platinum" && (
+                          <option
+                            selected={
+                              Plan_setup_data.device === "Mobile, TV, Web"
+                                ? true
+                                : false
+                            }
+                            value="Mobile, TV, Web"
+                          >
+                            Mobile, TV, Web
+                          </option>
+                        )}
+                        {/* <option
+                          selected={
+                            Plan_setup_data.device === "Web"
+                              ? true
+                              : false
+                          }
+                          value="Web"
+                        >
+                          Web
+                        </option> */}
+                      </select>
+                    </div>
+
                     <div className="mb-2 col-md-12">
                       <label className="form-label">validity</label>
                       <input

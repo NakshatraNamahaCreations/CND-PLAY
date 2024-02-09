@@ -27,14 +27,11 @@ const authSchema = new mongoose.Schema({
   watchingNow: { type: String },
   wishlist: { type: Array },
   Likes: { type: Array },
-
-  purchasedcontent: {
-    Active: [{ purchaseddate: String, expiryddate: String }],
-    Booked: [],
-    Expired: [{ content_id: String }],
-  },
+  purchasedcontent: { type: Array },
   continueWatching: { type: Array },
   firebase_id: { type: String },
+  otp: Number,
+  device: String,
 });
 
 module.exports = mongoose.model("auth", authSchema);

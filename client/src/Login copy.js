@@ -3,32 +3,14 @@ import React, { Component, useState, useEffect, forwardRef } from "react";
 import RegisterPage from "./DataApi/Register";
 import "react-toastify/dist/ReactToastify.css";
 
+import { auth, messaging } from "./firebaseConfig";
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
   PhoneAuthProvider,
+  getAuth,
 } from "firebase/auth";
 import { getToken } from "firebase/messaging";
-
-
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyD2Qw92SKVDnlZUq5wUdHA0zIEcAqDM0tI",
-  authDomain: "cnd-play.firebaseapp.com",
-  projectId: "cnd-play",
-  storageBucket: "cnd-play.appspot.com",
-  messagingSenderId: "955834134654",
-  appId: "1:955834134654:web:59fb6d2a0880cc0c76682f",
-  measurementId: "G-YFHNWG2ZBW",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-
 
 const Login = forwardRef((props, ref) => {
   const [isChecked, setIsChecked] = useState(false);
@@ -38,32 +20,7 @@ const Login = forwardRef((props, ref) => {
     phone: "",
     otp: Array(4).fill(""),
   };
-  const handleSendOTP = async () => {
-    try {
-      const phoneNumber = `+${login_data.phone}`;
-  
-      const recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
-        size: "invisible",
-      });
-  
-      recaptchaVerifier.appVerificationDisabledForTesting = true;
-  
-      const confirmationResult = await signInWithPhoneNumber(
-        auth,
-        phoneNumber,
-        recaptchaVerifier
-      );
-  
-      setisOtpSent(true);
-  
-      // Remove the following lines if you're not using messaging
-      // const token = await getToken(messaging);
-      // console.log("FCM Token:", token);
-    } catch (error) {
-      console.error("Error sending OTP:", error.message);
-    }
-  };
-  
+
   const [login_data, set_login_data] = React.useState(initialLoginData);
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -111,21 +68,57 @@ const Login = forwardRef((props, ref) => {
       console.error(error || "Unknown error occurred");
     }
   };
+  const handleSendOTP = async () => {
+    try {
+      const phoneNumber = `+${login_data.phone}`;
+  
+      // Create a RecaptchaVerifier
+      const recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
+        size: "invisible",
+      });
+  
+      // Disable app verification for testing
+      recaptchaVerifier.appVerificationDisabledForTesting = true;
+  
+      // Send OTP to the provided phone number
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+  
+      // Assuming you have a custom form for OTP entry, you won't need the prompt
+      // Instead, you should handle the OTP entry within your form
+  
+      // For example:
+      // const verificationCode = /* Get the verification code from your form */;
+      // const credential = PhoneAuthProvider.credential(confirmationResult.verificationId, verificationCode);
+      // await auth.signInWithCredential(credential);
+  
+      setisOtpSent(true);
+  
+      // Retrieve FCM token if needed
+      const token = await getToken(messaging);
+      console.log("FCM Token:", token);
+    } catch (error) {
+      console.error("Error sending OTP:", error.message);
+    }
+  };
+  
+  
+  
 
+  // Later, when the user enters the OTP in your form
   const handleVerifyOTP = async () => {
-  //   try {
-  //     const credential = PhoneAuthProvider.credential(
-  //       login_data.verificationId,
-  //       login_data.otp.join("")
-  //     );
+    try {
+      const credential = PhoneAuthProvider.credential(
+        login_data.verificationId,
+        login_data.otp.join("")
+      );
 
-  //     await getAuth().signInWithCredential(credential);
+      await getAuth().signInWithCredential(credential);
 
-  //     const token = await getToken(messaging);
-  //     console.log("FCM Token:", token);
-  //   } catch (error) {
-  //     console.error("Error verifying OTP:", error.message);
-  //   }
+      const token = await getToken(messaging);
+      console.log("FCM Token:", token);
+    } catch (error) {
+      console.error("Error verifying OTP:", error.message);
+    }
   };
 
   return (
@@ -160,7 +153,7 @@ const Login = forwardRef((props, ref) => {
                     <button
                       type="button"
                       className="btn row p-1 m-auto  btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                      onClick={handleLogin}
+                      onClick={handleSendOTP}
                       disabled={login_data.phone.length === 9}
                     >
                       SIGN IN

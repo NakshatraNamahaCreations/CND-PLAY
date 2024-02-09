@@ -27,7 +27,7 @@ exports.getdata = async (req, res) => {
 exports.getbyContentId = async (req, res) => {
   let getbyConteidd = req.params.idd;
   try {
-    const ContetnDocs = await ContentModel.findById({ _id: getbyConteidd });
+    const ContetnDocs = await ContentModel.findOne({ _id: getbyConteidd });
     return res.status(200).json({ data: ContetnDocs });
   } catch (error) {
     console.error("Error retrieving data:", error);
@@ -144,7 +144,7 @@ exports.create = async (req, res) => {
     views,
     likes,
     background_color,
-    poster,
+    poster,titleImg,
     banner,
     mobilebanner,
     tvhomescreenbnr,
@@ -225,7 +225,7 @@ exports.update = async (req, res) => {
       mobilebanner,
       tvhomescreenbnr,
       typeOfMovie,
-      mobilevideolink,
+      mobilevideolink,titleImg
     } = req.body;
 
     const findemovie = await ContentModel.findOne({
@@ -263,6 +263,8 @@ exports.update = async (req, res) => {
     findemovie.views = views || findemovie.views;
     findemovie.likes = likes || findemovie.likes;
     findemovie.poster = poster || findemovie.poster;
+    findemovie.titleImg = titleImg || findemovie.titleImg;
+    
     findemovie.banner = banner || findemovie.banner;
     findemovie.pricing.amount = amount || findemovie.pricing.amount;
     findemovie.pricing.validity = validity || findemovie.pricing.validity;

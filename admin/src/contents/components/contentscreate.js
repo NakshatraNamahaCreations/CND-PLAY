@@ -49,6 +49,7 @@ const ContentsCreate = forwardRef((props, ref) => {
     tvhomescreenbnr: "",
     background_color: "",
     typeOfMovie: "",
+    titleImg: "",
   };
 
   var temp_publish_year_arr = [];
@@ -96,6 +97,7 @@ const ContentsCreate = forwardRef((props, ref) => {
         subtitle: single_contents_data.data.subtitle,
         active: single_contents_data.data.active,
         background_color: single_contents_data.data.background_color,
+        titleImg: single_contents_data.data.titleImg,
       });
     },
   }));
@@ -147,6 +149,7 @@ const ContentsCreate = forwardRef((props, ref) => {
       mobilebanner: contents_data.mobilebanner,
       tvhomescreenbnr: contents_data.tvhomescreenbnr,
       typeOfMovie: contents_data.typeOfMovie,
+      titleImg: contents_data.titleImg,
     };
 
     try {
@@ -653,6 +656,19 @@ const ContentsCreate = forwardRef((props, ref) => {
                           );
                         })}
                       </select>
+                    </div>
+
+                    
+                    <div className="mb-2 col-md-4">
+                      <label className="form-label">Title Image  Link</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        id="titleImg"
+                        name="titleImg"
+                        value={contents_data.titleImg}
+                        onChange={handleChange}
+                      ></input>
                     </div>
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Mobile Banner Link</label>

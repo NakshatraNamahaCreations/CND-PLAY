@@ -12,7 +12,23 @@ exports.getPlan = async (req, res) => {
     return res.status(500).json({ error: "Failed to retrieve data" });
   }
 };
-
+exports.getAllData = async (req, res) => {
+  try {
+    const PlanseData = await Plansmodel.find();
+    return res.json({ data: PlanseData });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to retrieve data" });
+  }
+};
+exports.getbyPlanid = async (req, res) => {
+  let id = req.params.id
+  try {
+    const PlanseData = await Plansmodel.findById({_id:id});
+    return res.json({ data: PlanseData });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to retrieve data" });
+  }
+};
 exports.createPlan = async (req, res) => {
   const { planType, validity, amount, videoQuality } = req.body;
 

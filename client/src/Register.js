@@ -75,6 +75,8 @@ const Register = () => {
       });
   };
 
+  // console.log(register_data,"reg")
+
   const handleUpdate = async () => {
     if (userid?.idd) {
       RegisterPage.update(register_data, userid?.idd)
@@ -203,7 +205,7 @@ const Register = () => {
                 <select
                   className="content_section_data form-select p-2"
                   name="district"
-                  defaultValue={register_data?.district}
+                  value={register_data?.district}
                   onChange={handleChange}
                 >
                   <option value=""> - Select District - </option>

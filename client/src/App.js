@@ -13,6 +13,7 @@ import LikedContent from "./LikedContent";
 import WishListCon from "./WishContent";
 import Profile from "./Profile";
 import MusicComponent from "./Music";
+import Plan from "./Plan";
 
 function App() {
   return (
@@ -117,6 +118,19 @@ function App() {
               Children={
                 <>
                   <MusicComponent />
+                </>
+              }
+            />
+          }
+        />
+        <Route
+          exact
+          path="/Plan"
+          element={
+            <Layout
+              Children={
+                <>
+                  <Plan />
                 </>
               }
             />

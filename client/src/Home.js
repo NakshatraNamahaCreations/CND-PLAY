@@ -9,27 +9,23 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-
+import Modal from "react-bootstrap/Modal";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import { ImFilm } from "react-icons/im";
 import { Link, useNavigate } from "react-router-dom";
 import IndiaMoviePageService from "./DataApi/indiaMovieApi";
-import {
-  // BGBnners,
-  // mostvieved,
-  // TrendingMovies,
-  RecommendedMovies,
-  // BGBnners2,
-  TrendingMovies,
-  LanguageWise,
-  // ContentData,
-} from "./JsonData";
+import { RecommendedMovies, LanguageWise } from "./JsonData";
 import Footer from "./footer";
 import ContentsPageService from "./DataApi/Api";
 import SeriesPageService from "./DataApi/SeriesApi";
 import CheckIcon from "@mui/icons-material/Check";
 import { useDispatch, useSelector } from "react-redux";
 import { setWatchListId, removeListId } from "./DataStore.js/Slice/Watchlist";
+import CloseIcon from "@mui/icons-material/Close";
+import { Button, Card } from "react-bootstrap";
+import PlanServicePage from "./DataApi/PlanApi";
+import RegisterPage from "./DataApi/Register";
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [latestSlidesData, setLatestSlidesData] = useState(0);
@@ -48,6 +44,12 @@ export default function Home() {
   const [SeriesData, setSeriesData] = useState([]);
   const [mostViewedM, setMostViewedM] = useState([]);
   const [BannerData, setBannerData] = useState([]);
+  const [PlanGold, setPlanGold] = useState();
+  const [PlanSilver, setPlanSilver] = useState();
+  const [PlanPlatinum, setPlanPlatinum] = useState();
+  const [purchaceContentData, setpurchaceContentData] = useState();
+  const [purchaceContent, setPurchaceContent] = useState(false);
+  const [purchaseid, setpurchaseid] = useState(null);
   // handle banner
   const [animateLogo, setAnimateLogo] = useState(true);
   const [restartAnimation, setRestartAnimation] = useState(false);
@@ -261,12 +263,24 @@ export default function Home() {
 
   //  backend Api intigration
 
+  const handlePurchaceContent = (idd) => {
+    setpurchaseid(idd);
+    setPurchaceContent(true);
+  };
   const fetchData = async () => {
     let listOfMovie = await ContentsPageService.fetchContentsList();
     let mostvieved = await ContentsPageService.fetchMostViewList();
     let BannerData = await ContentsPageService.getBanerdata();
     let Seriesda = await SeriesPageService.fetchContentsListSeries();
     let Trendingdata = await IndiaMoviePageService.fetchTrendingList();
+    let getContentById = await ContentsPageService.getByContenId(purchaseid);
+    let PlanGold = await PlanServicePage.getGoldAllPlan();
+    let PlanSilver = await PlanServicePage.getSilverAllPlan();
+    let PlanPlatinum = await PlanServicePage.getPlatinumAllPlan();
+    setPlanGold(PlanGold);
+    setPlanSilver(PlanSilver);
+    setPlanPlatinum(PlanPlatinum);
+    setpurchaceContentData(getContentById);
     setSeriesData(Seriesda);
     setContentData(listOfMovie);
     setMostViewedM(mostvieved);
@@ -313,6 +327,54 @@ export default function Home() {
           console.error("Error updating user ", error);
         });
     }
+  };
+  const handlePlanPurchase = async (platy) => {
+    let initialPostData = { plan: platy };
+
+    RegisterPage.update(initialPostData, getlocalStorage?._id)
+      .then((response) => {
+        alert("User updated successfully");
+        window.location.reload("");
+      })
+      .catch((error) => {
+        console.log("Error updating user ");
+      });
+  };
+  const handlePurchaseContenet = async (idd, validity) => {
+    let currentDate = new Date();
+
+    let validityInHours = validity * 24;
+
+    let expirationDate = new Date(
+      currentDate.getTime() + validityInHours * 60 * 60 * 1000
+    );
+
+    let initialPostData = {
+      purchasedcontent: {
+        Active: {
+          purchaseddate: currentDate,
+          expiryddate: expirationDate,
+
+          content_id: purchaseid,
+        },
+        PurchasedHistory: [
+          {
+            purchaseddate: currentDate,
+            expiryddate: expirationDate,
+            content_id: purchaseid,
+          },
+        ],
+      },
+    };
+
+    RegisterPage.update(initialPostData, getlocalStorage?._id)
+      .then((response) => {
+        alert("User updated successfully", response);
+        window.location.reload("");
+      })
+      .catch((error) => {
+        console.log("Error updating user ");
+      });
   };
 
   return (
@@ -393,9 +455,21 @@ export default function Home() {
                             </span>
 
                             <span className="col-md-6 m-auto text-white detailsList relativeP ">
-                              <IoInformationCircleOutline className="addicons fnt30  " />
+                              <IoInformationCircleOutline
+                                onClick={() =>
+                                  handlePurchaceContent(
+                                    BannerData[currentSlide]?._id
+                                  )
+                                }
+                                className="addicons fnt30  "
+                              />
                               <button className="col-md-3  details">
-                                Details
+                                <Link
+                                  className="text-dark"
+                                  state={{ id: BannerData[currentSlide]?._id }}
+                                >
+                                  Details
+                                </Link>
                               </button>
                             </span>
                           </div>
@@ -568,7 +642,10 @@ export default function Home() {
                           </button>
                         </div>
                         <div className="col-md-3 text_White m-auto relativeP viewmore">
-                          <MoreVertIcon className="addicon" />
+                          <MoreVertIcon
+                            onClick={() => handlePurchaceContent(ele?._id)}
+                            className="addicon"
+                          />
                           <button className="col-md-3 p-1 mt-1 fnt12 slidemore  textbold ">
                             More
                           </button>
@@ -669,42 +746,6 @@ export default function Home() {
             </div>
           </div>
         )}
-        {/* <div className="row mt-3 mb-3  m-auto relativeP">
-          <h6 className="row text_White m-auto mb-3 ">
-            {" "}
-            CND PLAY Watch In Your language
-          </h6>
-
-          <button
-            onClick={() => handelprevSlider(2)}
-            className="slidebtn1 text-white"
-          >
-            &#10094;
-          </button>
-          <button
-            onClick={() => handelnextSlider(2)}
-            className="slidebtn2 text-white"
-          >
-            &#10095;
-          </button>
-          <div className="row m-auto">
-            {LanguageWise?.slice(LanguageWisedata, LanguageWisedata + 4).map(
-              (ele) => (
-                <div
-                  key={ele?.id}
-                  className="col-md-3 m-auto  movie-container  "
-                >
-                  <img
-                    src={ele?.movie}
-                    alt=""
-                    height={140}
-                    className="w-100  borderRa"
-                  />
-                </div>
-              )
-            )}
-          </div>
-        </div> */}
 
         <div className="row mt-3 mb-3  m-auto relativeP">
           <h6 className="row text_White m-auto mb-3 ">
@@ -826,17 +867,6 @@ export default function Home() {
 
                       <div className="col-md-8"></div>
                     </div>
-                    {/* 
-                    <div className="d-flex mb-3">
-                      {image.language?.map((Ele) => {
-                        return (
-                          <>
-                            <span className="fnt12  me-1"> {Ele} </span>
-                            <span className="fnt12  me-2">|</span>
-                          </>
-                        );
-                      })}
-                    </div> */}
 
                     <div className="row ">
                       <span className="col-md-3  m-auto  text-white ">
@@ -1034,6 +1064,120 @@ export default function Home() {
               </Carousel.Item>
             ))}
           </Carousel>
+        </div>
+
+        <div className="row">
+          <Modal
+            className="row"
+            size="lg"
+            show={purchaceContent}
+            onHide={() => setPurchaceContent(false)}
+            style={{ position: "absolute", top: "30%" }}
+          >
+            <Modal.Header className="row bg-dark ">
+              <span className="col-md-5  text_White">
+                More Purchace Content Option
+              </span>
+              <span className="col-md-6 m-auto"></span>
+              <span className="col-md-1  text_White">
+                <CloseIcon
+                  onClick={() => setPurchaceContent(false)}
+                  className="cursor"
+                />
+              </span>
+            </Modal.Header>
+
+            <Modal.Body className="row bg-dark text_White">
+              {!purchaceContentData ? (
+                <p className="text-white text-center">Loading</p>
+              ) : (
+                <>
+                  <div className="col-md-3">
+                    <div className="row">
+                      <p className="row">
+                        {" "}
+                        Purchace {purchaceContentData?.title}{" "}
+                        {purchaceContentData?.section}
+                      </p>
+                      <Card
+                        className="col-md-8 mb-3 mt-3 p-2"
+                        onClick={() =>
+                          handlePurchaseContenet(
+                            purchaceContentData?._id,
+                            purchaceContentData?.pricing.validity
+                          )
+                        }
+                      >
+                        <p className="m-auto">
+                          ₹{purchaceContentData?.pricing?.amount} /{" "}
+                          {purchaceContentData?.pricing?.validity} days
+                        </p>
+                      </Card>
+                    </div>
+                  </div>
+
+                  <div className="col-md-9">
+                    <div className="row mb-3 mt-3 ">
+                      <p className="row"> Buy Plan</p>
+                      <Card className="col-md-3 p-1 card m-auto">
+                        {PlanSilver?.map((ele) => {
+                          return (
+                            <div
+                              onClick={() => handlePlanPurchase(ele.planType)}
+                            >
+                              <p className="row m-auto">{ele.planType}</p>
+                              <p className="row m-auto">
+                                ₹{ele.amount}/{ele.validity} days
+                              </p>
+                              <p className="row m-auto">
+                                Video Qlty {ele.videoQuality}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </Card>
+                      <Card className="col-md-3 p-1 card m-auto">
+                        {PlanGold?.map((ele) => {
+                          return (
+                            <div
+                              onClick={() => handlePlanPurchase(ele.planType)}
+                            >
+                              {" "}
+                              <p className="row m-auto">{ele.planType}</p>
+                              <p className="row m-auto">
+                                ₹{ele.amount}/{ele.validity} days
+                              </p>
+                              <p className="row m-auto">
+                                Video Qlty {ele.videoQuality}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </Card>
+
+                      <Card className="col-md-3 p-1 card m-auto">
+                        {PlanPlatinum?.map((ele) => {
+                          return (
+                            <div
+                              onClick={() => handlePlanPurchase(ele.planType)}
+                            >
+                              <p className="row m-auto">{ele.planType}</p>
+                              <p className="row m-auto">
+                                ₹{ele.amount}/{ele.validity} days
+                              </p>
+                              <p className="row m-auto">
+                                Video Qlty {ele.videoQuality}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </Card>
+                    </div>
+                  </div>
+                </>
+              )}
+            </Modal.Body>
+          </Modal>
         </div>
         <Footer />
       </div>

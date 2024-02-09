@@ -171,6 +171,9 @@ export default function Header() {
                       <a href="/LikedContent" className="cate">
                         <span className="cate">My Liked</span>
                       </a>
+                      <a href="/Plan" className="cate">
+                        <span className="cate">Plan</span>
+                      </a>
                       <a href="/WishContent" className="cate">
                         <span className="cate"> My Wishlist</span>
                       </a>

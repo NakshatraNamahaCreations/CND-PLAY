@@ -5,7 +5,7 @@ const upcomingMovie = new mongoose.Schema({
   poster: String,
   banner: String,
   datacount: Number,
-  page: Number,
+  page: Number,titleImg:String
 });
 
 const upcomingSchemas = mongoose.model("upcoming", upcomingMovie);

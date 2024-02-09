@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
     likes,
     background_color,
     poster,
-    banner,
+    banner,titleImg
   } = req.body;
 
   try {
@@ -79,7 +79,7 @@ exports.create = async (req, res) => {
       likes,
       background_color,
       poster,
-      banner,
+      banner,titleImg
     });
     const saveMovie = await movidata.save();
 
@@ -120,7 +120,7 @@ exports.update = async (req, res) => {
       likes,
       background_color,
       poster,
-      banner,
+      banner,titleImg
     } = req.body;
 
     const findemovie = await indie_movieModel.findOne({
@@ -154,7 +154,8 @@ exports.update = async (req, res) => {
       background_color || findemovie.background_color;
     findemovie.poster = poster || findemovie.poster;
     findemovie.banner = banner || findemovie.banner;
-
+    findemovie.titleImg = titleImg || findemovie.titleImg;
+    
     findemovie.pricing.amount = amount || findemovie.pricing.amount;
     findemovie.pricing.validity = validity || findemovie.pricing.validity;
 

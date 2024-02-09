@@ -25,13 +25,11 @@ import PinterestIcon from "@mui/icons-material/Pinterest";
 import CloseIcon from "@mui/icons-material/Close";
 import Plyr from "plyr";
 import zIndex from "@mui/material/styles/zIndex";
-export default function WatchVideoMode() {
+export default function CategoryWise() {
   const location = useLocation();
   const idd = location.state ? location.state.id : null;
-
   let authResponseString = localStorage.getItem("auth_response");
   let getlocalStorage = JSON.parse(authResponseString);
-
   const [volume, setvolume] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [WachedMovie, setWachedMovie] = useState(false);

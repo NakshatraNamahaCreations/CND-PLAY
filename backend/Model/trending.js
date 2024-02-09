@@ -12,7 +12,7 @@ const trendingModel = new mongoose.Schema({
   title: String,
   section: String,
   datacount: Number,
-  page: Number,
+  page: Number,titleImg:String
 });
 
 const trendingModels = mongoose.model("trending", trendingModel);

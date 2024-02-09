@@ -25,7 +25,7 @@ exports.getdata = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  const { poster, title, section, type, amount, validity, active, banner } =
+  const { poster, title, section, type, amount, validity, active, banner ,titleImg} =
     req.body;
 
   try {
@@ -39,7 +39,7 @@ exports.create = async (req, res) => {
         validity,
       },
       active,
-      banner,
+      banner,titleImg
     });
     let trendingdata = await trending.save();
     return res.status(200).json({ data: trendingdata });
@@ -63,7 +63,7 @@ exports.update = async (req, res) => {
       amount,
       validity,
       active,
-      banner,
+      banner,titleImg
     } = req.body;
 
     const findemovie = await trendingModel.findOne({
@@ -75,6 +75,8 @@ exports.update = async (req, res) => {
     }
     findemovie.banner = banner || findemovie.banner;
     findemovie.poster = poster || findemovie.poster;
+    findemovie.titleImg = titleImg || findemovie.titleImg;
+    
     findemovie.title = title || findemovie.title;
     findemovie.section = section || findemovie.section;
     findemovie.type = type || findemovie.type;

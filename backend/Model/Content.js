@@ -33,7 +33,7 @@ const contentSchema = new mongoose.Schema({
   tvhomescreenbnr: String,
   user_id: Object,
   typeOfMovie: String,
-  mobilevideolink: String,
+  mobilevideolink: String,titleImg:String
 });
 
 const Content = mongoose.model("Content", contentSchema);

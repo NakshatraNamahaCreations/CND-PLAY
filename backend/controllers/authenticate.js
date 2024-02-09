@@ -34,10 +34,10 @@ exports.makeregister = async (req, res) => {
     lastLogin,
     messageToken,
     watchingNow,
-    wishlist,
+    wishlist,device
   } = req.body;
 
-  let existingUser = await authModel.findOne({ ch_id, password, username });
+  let existingUser = await authModel.findOne({ password, phone });
 
   if (existingUser) {
     return res.status(400).json({ error: "User already exists" });
@@ -77,7 +77,7 @@ exports.makeregister = async (req, res) => {
       lastLogin,
       messageToken,
       watchingNow,
-      wishlist,
+      wishlist,device
     });
 
     let saveUser = await createuser.save();
@@ -108,16 +108,15 @@ exports.makelogout = async (req, res) => {
 };
 exports.makelogin = async (req, res) => {
   try {
-    const { password, username } = req.body;
+    const { phone, otp } = req.body;
 
-    const existingUser = await authModel.findOne({ username });
-    console.log(password, "password");
-    console.log(existingUser.password, "existingUser");
+    const existingUser = await authModel.findOne({ phone });
+
     if (!existingUser) {
       return res.status(400).json({ error: "User does not exist" });
     }
 
-    if (existingUser.password !== password) {
+    if (!phone) {
       return res.status(400).json({ error: "Incorrect password" });
     }
 
@@ -343,7 +342,7 @@ exports.getByUserId = async (req, res) => {
 
   try {
     const userdata = await authModel.findOne({ _id: userid });
-    console.log(userdata, "userdata");
+    // console.log(userdata, "userdata");
     res.status(200).json({ uniqueuser: userdata });
   } catch (err) {
     console.error(err);

@@ -4,7 +4,6 @@ let getlocalStorage = JSON.parse(authResponseString);
 const fetchContentsList = async () => {
   try {
     let listOfMovie = await http.get(`/contents/getdata`);
-
     if (listOfMovie.status === 200) {
       const onlyMovieList = listOfMovie.data.data.filter(
         (movie) => movie.section === "movie"
@@ -16,7 +15,6 @@ const fetchContentsList = async () => {
   }
 };
 const getByContenId = async (idd) => {
-  console.log(idd, "dat");
   try {
     let listOfMovie = await http.get(`/contents/getbycontentid/${idd}`);
 
@@ -170,6 +168,18 @@ const getAllUSer = async () => {
     console.error("Error fetching trending list:", error);
   }
 };
+
+const fetchContentsAllList = async () => {
+  try {
+    let listOfMovie = await http.get(`/contents/getdata`);
+    if (listOfMovie.status === 200) {
+      return listOfMovie.data.data;
+    }
+  } catch (error) {
+    console.error("Error fetching trending list:", error);
+  }
+};
+
 const ContentsPageService = {
   fetchContentsList,
   fetchMostViewList,
@@ -178,7 +188,7 @@ const ContentsPageService = {
   getLanguagedata,
   getBanerdata,
   postLikes,
-  ContentRating,
+  ContentRating,  
   getLatestreleased,
   getByContenId,
   getLikes,
@@ -186,6 +196,7 @@ const ContentsPageService = {
   CountLike,
   PostWishList,
   getWishList,
+  fetchContentsAllList,
 };
 
 export default ContentsPageService;
