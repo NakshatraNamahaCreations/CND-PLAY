@@ -1,0 +1,111 @@
+.contact-us-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.contact-us-container h1 {
+  margin-top: 20px;
+}
+
+.contact-us-container p {
+  margin-bottom: 10px;
+}
+
+.contact-info {
+  margin-bottom: 10px;
+}
+
+.info-label {
+  font-weight: bold;
+}
+
+.info-value a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.info-value a:hover {
+  text-decoration: underline;
+}
+
+/* privacy */
+
+.privacy-policy-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.privacy-policy-container h1,
+.privacy-policy-container h2 {
+  margin-top: 20px;
+}
+
+.privacy-policy-container p {
+  margin-bottom: 10px;
+}
+
+.privacy-policy-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.privacy-policy-container a:hover {
+  text-decoration: underline;
+}
+/* terms of use */
+
+.terms-of-use-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.terms-of-use-container h1 {
+  margin-top: 20px;
+}
+
+.terms-of-use-container p {
+  margin-bottom: 10px;
+}
+
+.terms-of-use-container ol {
+  padding-left: 20px;
+}
+
+.terms-of-use-container ol li {
+  margin-bottom: 10px;
+}
+
+.terms-of-use-container strong {
+  font-weight: bold;
+}
+/*Refund  */
+.refund-cancellation-return-policy-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.refund-cancellation-return-policy-container h1,
+.refund-cancellation-return-policy-container h2 {
+  margin-top: 20px;
+}
+
+.refund-cancellation-return-policy-container p {
+  margin-bottom: 10px;
+}
+
+.refund-cancellation-return-policy-container strong {
+  font-weight: bold;
+}
+
+.refund-cancellation-return-policy-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.refund-cancellation-return-policy-container a:hover {
+  text-decoration: underline;
+}

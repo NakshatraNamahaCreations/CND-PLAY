@@ -1,0 +1,1 @@
+export const MAKE_REGISTER = "MAKE_REGISTER";

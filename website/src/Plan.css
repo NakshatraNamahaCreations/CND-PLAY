@@ -1,0 +1,153 @@
+/* PricingTable.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.plan-card {
+  position: relative;
+  max-width: 300px;
+  height: auto;
+  background: linear-gradient(-45deg, #fe0847, #feae3f);
+  border-radius: 15px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.5s;
+}
+
+.plan-card:hover {
+  transform: scale(1.1);
+}
+
+.bg-1,
+.bg-1 .plan-title .fa {
+  background: linear-gradient(-45deg, #b88a36, #4f4c09);
+}
+.bg-2,
+.bg-2 .plan-title .fa {
+  background: linear-gradient(-45deg, #77787f, #848789);
+}
+.bg-3,
+.bg-3 .plan-title .fa {
+  background: linear-gradient(-45deg, #080913, #848789);
+}
+.cardiv {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  background-color: #24ff72;
+}
+
+.plan-card:nth-child(2),
+.plan-card:nth-child(2) .plan-title .fa {
+  background: linear-gradient(-45deg, #ffec61, #f321d7);
+}
+
+.plan-card:nth-child(3),
+.plan-card:nth-child(3) .plan-title .fa {
+  background: linear-gradient(-45deg, #24ff72, #9a4eff);
+}
+
+.plan-card::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+  transform: skewY(-5deg) scale(1.5);
+}
+
+.plan-title .fa {
+  color: #fff;
+  font-size: 60px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  /* text-align: center; */
+  line-height: 100px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.plan-title h2 {
+  position: relative;
+  margin: 20px 0 0;
+  padding: 0;
+  color: #fff;
+  font-size: 28px;
+  z-index: 2;
+}
+
+.price,
+.plan-option {
+  position: relative;
+  z-index: 2;
+}
+
+.price h4 {
+  margin: 0;
+  padding: 20px 0;
+  color: #fff;
+  font-size: 40px;
+}
+
+.plan-option ul {
+  margin: 0;
+  padding: 0;
+}
+
+.plan-option ul li {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+  color: #fff;
+  font-size: 16px;
+}
+
+.plan-card a {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  color: black;
+  width: 150px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 40px;
+  display: block;
+  /* text-align: center; */
+  margin: 20px auto 0;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card a:hover {
+  text-decoration: none;
+}
+
+.ratehis {
+  border: none;
+  border-radius: 10px;
+}
+.ratehisbg {
+  background-color: #e2b616;
+  border: none;
+  border-radius: 10px;
+}
+.plan-bg {
+  background-image: url("https://templates.iqonic.design/streamit/html/frontend/assets/images/pages/01.webp");
+}
+.plan-btn {
+  border-radius: 20px;
+  background-color: white;
+  border: none;
+}
+.active {
+  background-color: rgb(110, 96, 14);
+  color: black;
+  color: white;
+}
