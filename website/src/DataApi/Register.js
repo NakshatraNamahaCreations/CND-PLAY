@@ -22,9 +22,11 @@ const Register = async (data) => {
 
 const GetUserById = async (id) => {
   try {
-    let res = await http.get(`/authenticateRoute/getbyuserid/${id}`);
-    if (res.status === 200) {
-      return res.data;
+    if (id) {
+      let res = await http.get(`/authenticateRoute/getbyuserid/${id}`);
+      if (res.status === 200) {
+        return res.data;
+      }
     }
   } catch (error) {
     // console.error("Error fetching continue watching:", error);

@@ -217,7 +217,25 @@ ul.content_videos_data {
 .apexcharts-xaxis-label {
   color: white !important;
 } */
-.css-r8u8y9{
+.css-r8u8y9 {
   background-color: #2a3038 !important;
   color: white !important;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+.fa-toggle-on
+{
+  color: rgb(107, 198, 223);
 }

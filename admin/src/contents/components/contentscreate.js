@@ -19,8 +19,8 @@ const ContentsCreate = forwardRef((props, ref) => {
   const [dataCount, setDataCount] = useState(5);
   const [page, setPage] = useState(1);
 
-  const [CastData, set_Cast] = useState({});
-  const [CrewData, set_Crew] = useState({});
+  const [CastData, set_Cast] = useState([]);
+  const [CrewData, set_Crew] = useState([]);
 
   const [GenresData, setGenresData] = useState([]);
 
@@ -62,6 +62,9 @@ const ContentsCreate = forwardRef((props, ref) => {
   const [showModal, setShowModal] = useState(false);
   const [is_edit, setEdit] = useState(false);
   const [publish_years, setPublishYears] = useState(temp_publish_year_arr);
+  const [SelctedGeners, setSelctedGeners] = React.useState(
+    GenresData.map((item) => item.name)
+  );
 
   React.useImperativeHandle(ref, () => ({
     showContentsCreateChildModal(single_contents_data) {
@@ -84,7 +87,6 @@ const ContentsCreate = forwardRef((props, ref) => {
         tvhomescreenbnr: single_contents_data.tvhomescreenbnr,
         poster: single_contents_data.poster,
         video: single_contents_data.video,
-        genres: single_contents_data.genres,
         likes: single_contents_data.likes,
         views: single_contents_data.views,
         rating: single_contents_data.rating,
@@ -97,9 +99,14 @@ const ContentsCreate = forwardRef((props, ref) => {
         subtitle: single_contents_data.subtitle,
         active: single_contents_data.active,
         titleImg: single_contents_data.titleImg,
-        cast: single_contents_data.CastData,
-        creaw: single_contents_data.CrewData,
+
+        typeOfMovie: single_contents_data.typeOfMovie,
       });
+      setNumberOfInputs(single_contents_data.cast.length);
+      setNumberOfCreaw(single_contents_data.creaw.length);
+      set_Cast(single_contents_data.cast);
+      set_Crew(single_contents_data.creaw);
+      setSelctedGeners(single_contents_data.genres);
     },
   }));
 
@@ -149,8 +156,8 @@ const ContentsCreate = forwardRef((props, ref) => {
       tvhomescreenbnr: contents_data.tvhomescreenbnr,
       typeOfMovie: contents_data.typeOfMovie,
       titleImg: contents_data.titleImg,
-      cast: Object.values(CastData),
-      creaw: Object.values(CrewData),
+      cast: CastData,
+      creaw: CrewData,
     };
 
     try {
@@ -178,7 +185,14 @@ const ContentsCreate = forwardRef((props, ref) => {
 
   const handleSubmitExistingContentsUpdateFunc = () => {
     if (contents_data.id) {
-      ContentsPageService.updateContents(contents_data, contents_data.id)
+      let data = {
+        contents_data,
+        genres: SelctedGeners,
+        cast: CastData,
+        creaw: CrewData,
+      };
+
+      ContentsPageService.updateContents(data, contents_data.id)
         .then((response) => {
           alert("contents updated successfully", response);
           window.location.reload("/");
@@ -214,10 +228,6 @@ const ContentsCreate = forwardRef((props, ref) => {
     },
   };
 
-  const [SelctedGeners, setSelctedGeners] = React.useState(
-    GenresData.map((item) => item.name)
-  );
-
   const handleChange1 = (event) => {
     const {
       target: { value },
@@ -230,28 +240,32 @@ const ContentsCreate = forwardRef((props, ref) => {
   const [numberOfCreaw, setNumberOfCreaw] = useState(1);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const index = name.match(/\d+/)[0];
+    const index = name.match(/\d+/)[0] - 1;
+    const key = name.replace(/\d+/g, "");
 
-    set_Cast((prev) => ({
-      ...prev,
-      [index]: {
-        ...prev[index],
-        [name.replace(/\d+/g, "")]: value,
-      },
-    }));
+    set_Cast((prev) => {
+      const updatedCast = [...prev];
+      if (!updatedCast[index]) {
+        updatedCast[index] = {};
+      }
+      updatedCast[index][key] = value;
+      return updatedCast;
+    });
   };
 
   const handleCreawChange = (e) => {
     const { name, value } = e.target;
-    const index = name.match(/\d+/)[0];
+    const index = name.match(/\d+/)[0] - 1;
+    const key = name.replace(/\d+/g, "");
 
-    set_Crew((prev) => ({
-      ...prev,
-      [index]: {
-        ...prev[index],
-        [name.replace(/\d+/g, "")]: value,
-      },
-    }));
+    set_Crew((prev) => {
+      const updatedCrew = [...prev];
+      if (!updatedCrew[index]) {
+        updatedCrew[index] = {};
+      }
+      updatedCrew[index][key] = value;
+      return updatedCrew;
+    });
   };
 
   const handleAddCreaw = () => {
@@ -261,6 +275,25 @@ const ContentsCreate = forwardRef((props, ref) => {
   const handleAddInput = () => {
     setNumberOfInputs((prevNumber) => prevNumber + 1);
   };
+  const handleremoveCast = (index) => {
+    setNumberOfInputs((prev) => prev - 1);
+
+    set_Cast((prev) => {
+      const updatedCast = [...prev];
+      updatedCast.splice(index, 1);
+      return updatedCast;
+    });
+  };
+  const handleremoveCreaw = (index) => {
+    setNumberOfCreaw((prev) => prev - 1);
+
+    set_Crew((prev) => {
+      const updatedCrew = [...prev];
+      updatedCrew.splice(index, 1);
+      return updatedCrew;
+    });
+  };
+
   return (
     <div className="mt-2 row">
       <div className="mt-2 container-fluid">
@@ -428,7 +461,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                         <option>Select</option>
                         <option
                           selected={
-                            contents_data.isrecommended === true ? true : false
+                            contents_data.isCarousel === true ? true : false
                           }
                           value={true}
                         >
@@ -437,7 +470,7 @@ const ContentsCreate = forwardRef((props, ref) => {
 
                         <option
                           selected={
-                            contents_data.isrecommended === false ? true : false
+                            contents_data.isCarousel === false ? true : false
                           }
                           value={false}
                         >
@@ -457,27 +490,15 @@ const ContentsCreate = forwardRef((props, ref) => {
                           backgroundColor: "#2a3038",
                           borderRadius: "10px",
                         }}
-                        // name="geners"
-                        value={SelctedGeners}
-                        defaultValue={contents_data?.genres}
+                        defaultValue={SelctedGeners}
                       >
                         <Select
                           labelId="demo-multiple-checkbox-label"
                           id="demo-multiple-checkbox"
                           multiple
-                          value={
-                            !contents_data?.genres
-                              ? SelctedGeners?.map((ele) =>
-                                  GenresData?.find(
-                                    (genre) => genre?.name === ele
-                                  )
-                                )
-                              : contents_data?.genres?.map((ele) =>
-                                  GenresData?.find(
-                                    (genre) => genre?.name === ele
-                                  )
-                                )
-                          }
+                          value={SelctedGeners?.map((ele) =>
+                            GenresData?.find((genre) => genre?.name === ele)
+                          )}
                           onChange={handleChange1}
                           renderValue={(selected) =>
                             selected?.map((s) => s?.name)?.join(", ")
@@ -494,10 +515,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                                 checked={SelctedGeners.includes(genre.name)}
                               />
 
-                              <ListItemText
-                                className="text-white"
-                                // primary={genre.name}
-                              >
+                              <ListItemText className="text-white">
                                 <span>{genre.name}</span>
                               </ListItemText>
                             </MenuItem>
@@ -512,7 +530,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                       <select
                         className="content_section_data form-select"
                         name="typeOfMovie"
-                        defaultValue={contents_data.section}
+                        defaultValue={contents_data.typeOfMovie}
                         onChange={handleChange}
                       >
                         <option value=""> - Select Movie Type - </option>
@@ -652,7 +670,13 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></input>
                     </div>
-                    <div className="mb-2 col-md-4">
+                    <div
+                      className={`${
+                        contents_data?.typeOfMovie === "Upcoming"
+                          ? "col-md-2"
+                          : "col-md-4"
+                      } mb-2 `}
+                    >
                       <label className="form-label">Content Price</label>
                       <input
                         type="number"
@@ -663,6 +687,23 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></input>
                     </div>
+                    {contents_data?.typeOfMovie === "Upcoming" && (
+                      <div className="mb-2 col-md-2">
+                        <label className="form-label">
+                          Upcoming Movie Date
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          id="subtitle"
+                          name="subtitle"
+                          placeholder="DD/MM/YY"
+                          value={contents_data.subtitle}
+                          onChange={handleChange}
+                        ></input>
+                      </div>
+                    )}
+
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Validity</label>
                       <input
@@ -674,15 +715,16 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></input>
                     </div>
-
                     <div className="mb-2 col-md-6">
-                      <label className="form-label">Pick Banner Color</label>
+                      <label className="form-label">
+                        Pick Banner Color {contents_data?.background_color}
+                      </label>
                       <input
                         type="color"
                         className="form-control form-control-sm"
                         id="background_color"
                         name="background_color"
-                        value={contents_data.background_color}
+                        defaultValue={contents_data.background_color}
                         onChange={handleChange}
                       ></input>
                     </div>
@@ -709,7 +751,6 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></textarea>
                     </div>
-
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Publish Year</label>
                       <select
@@ -722,9 +763,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                         {publish_years.map((value_p, index_p) => {
                           return (
                             <option
-                              selected={
-                                contents_data.publish === value_p ? true : false
-                              }
+                              selected={contents_data.publish}
                               value={value_p}
                             >
                               {value_p}
@@ -779,7 +818,6 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></input>
                     </div>
-
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Video Link</label>
                       <input
@@ -824,7 +862,6 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></input>
                     </div>
-
                     <div className="row">
                       <div className="col-md-4">
                         <span className="d-flex">
@@ -838,39 +875,42 @@ const ContentsCreate = forwardRef((props, ref) => {
                       </div>
                     </div>
                     {[...Array(numberOfInputs)].map((_, index) => (
-                      <>
-                        <div className="mb-2 col-md-4" key={index}>
+                      <div className="row" key={index}>
+                        <div className="mb-2 col-md-4">
                           <label className="form-label">Actor Name</label>
                           <input
                             type="text"
                             className="form-control form-control-sm"
                             name={`actor${index + 1}`}
-                            value={CastData[`actor${index + 1}`]}
+                            value={CastData[index]?.actor || ""}
                             onChange={handleInputChange}
                           />
                         </div>
-                        <div className="mb-2 col-md-4" key={index}>
-                          <label className="form-label"> Role</label>
+                        <div className="mb-2 col-md-4">
+                          <label className="form-label">Role</label>
                           <input
                             type="text"
                             className="form-control form-control-sm"
                             name={`charcter${index + 1}`}
-                            value={CastData[`charcter${index + 1}`]}
+                            value={CastData[index]?.charcter || ""}
                             onChange={handleInputChange}
                           />
                         </div>
-
-                        <div className="mb-2 col-md-4" key={index}>
-                          <label className="form-label"> Profile</label>
+                        <div className="mb-2 col-md-3">
+                          <label className="form-label">Profile</label>
                           <input
                             type="text"
                             className="form-control form-control-sm"
                             name={`actorProfile${index + 1}`}
-                            value={CastData[`actorProfile${index + 1}`]}
+                            value={CastData[index]?.actorProfile || ""}
                             onChange={handleInputChange}
                           />
                         </div>
-                      </>
+                        <i
+                          class="mdi color-red mdi-delete-circle col-md-1 m-auto"
+                          onClick={() => handleremoveCast(index)}
+                        ></i>
+                      </div>
                     ))}
                     <div className="row">
                       <div className="row">
@@ -885,43 +925,45 @@ const ContentsCreate = forwardRef((props, ref) => {
                           </span>
                         </div>
                       </div>
+
                       {[...Array(numberOfCreaw)].map((_, index) => (
-                        <>
+                        <div className="row" key={index}>
                           <div className="mb-2 col-md-4">
                             <label className="form-label">Name</label>
                             <input
                               type="text"
                               className="form-control form-control-sm"
-                              id="name"
                               name={`name${index + 1}`}
-                              value={CrewData[`name${index + 1}`]}
+                              value={CrewData[index]?.name || ""}
                               onChange={handleCreawChange}
-                            ></input>
+                            />
                           </div>
                           <div className="mb-2 col-md-4">
-                            <label className="form-label"> Role</label>
+                            <label className="form-label">Role</label>
                             <input
-                              id="Role"
                               type="text"
                               className="form-control form-control-sm"
                               name={`Role${index + 1}`}
-                              value={CrewData[`Role${index + 1}`]}
+                              value={CrewData[index]?.Role || ""}
                               onChange={handleCreawChange}
-                            ></input>
+                            />
                           </div>
-
-                          <div className="mb-2 col-md-4">
+                          <div className="mb-2 col-md-3">
                             <label className="form-label">Profile</label>
                             <input
                               type="text"
                               className="form-control form-control-sm"
-                              id="profile"
                               name={`profile${index + 1}`}
-                              value={CrewData[`profile${index + 1}`]}
+                              value={CrewData[index]?.profile || ""}
                               onChange={handleCreawChange}
-                            ></input>
+                            />
                           </div>
-                        </>
+
+                          <i
+                            class="mdi color-red mdi-delete-circle col-md-1 m-auto"
+                            onClick={() => handleremoveCreaw(index)}
+                          ></i>
+                        </div>
                       ))}
                     </div>
                   </div>

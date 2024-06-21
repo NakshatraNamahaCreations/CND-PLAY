@@ -208,10 +208,8 @@ exports.create = async (req, res) => {
       storyline,
       publish,
       ContentRating,
-
       amount,
       validity,
-
       views,
       likes,
       background_color,
@@ -266,6 +264,9 @@ exports.update = async (req, res) => {
       typeOfMovie,
       mobilevideolink,
       titleImg,
+      cast,
+      creaw,
+      duration,
     } = req.body;
 
     const findemovie = await ContentModel.findOne({
@@ -304,7 +305,11 @@ exports.update = async (req, res) => {
     findemovie.banner = banner || findemovie.banner;
     findemovie.amount = amount || findemovie.amount;
     findemovie.validity = validity || findemovie.validity;
-
+    findemovie.cast = cast || findemovie.cast;
+    findemovie.genres = genres || findemovie.genres;
+    findemovie.creaw = creaw || findemovie.creaw;
+    findemovie.duration = duration || findemovie.duration;
+   
     const updateMovie = await ContentModel.findOneAndUpdate(
       { _id: trendingidd },
       findemovie,
@@ -587,11 +592,10 @@ exports.getAllSeriesList = async (req, res) => {
 };
 
 exports.getAllSeriesForEpisode = async (req, res) => {
-
   try {
     const seriesdata = await ContentModel.find({
       section: "series",
-    })
+    });
 
     return res.json({ data: seriesdata });
   } catch (error) {

@@ -26,7 +26,6 @@ const updatOffer = (data, idd) => {
   });
 };
 const changOfferStatus = (data) => {
-  console.log(data,"data===================")
   return http.post(`offer/changestatus`, {
     headers: {
       "Content-Type": "application/json;charset=UTF-8",

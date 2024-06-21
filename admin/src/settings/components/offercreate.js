@@ -68,7 +68,7 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
         Contents: single_club_create_data?.Contents,
         validity: single_club_create_data.validity,
         active: single_club_create_data.active,
-    
+
         poster: single_club_create_data.poster,
       });
     },
@@ -96,32 +96,43 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
   };
   console.log(SelectedContent, "SelectedContent");
   const handleSubmitNewPlan_SetupCreateFunc = async () => {
-    let data = await SelectedContent.map((Ele) => ({
+    if (!SelectedContent || SelectedContent.length === 0) {
+      return alert("Please Select Offer Content");
+    }
+
+    let data = SelectedContent.map((Ele) => ({
       title: Ele.title,
       contentId: Ele._id,
     }));
 
-    OFFerPageService.creatOffer({
+    const payload = {
       title: club_create_data?.title,
       subtitle: club_create_data?.subtitle,
       price: club_create_data?.price,
       image: club_create_data?.image,
-      validity: club_create_data.validity,
-      active: club_create_data.active,
-      poster: club_create_data.poster,
+      validity: club_create_data?.validity,
+      active: club_create_data?.active,
+      poster: club_create_data?.poster,
       Contents: data,
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          alert("Club created");
-          window.location.reload("");
-          setEdit(false);
-          setShowModal(false);
-          setSubmitted(true);
-        }
-      })
-      .catch((error) => console.error(error));
+    };
+
+    try {
+      const response = await OFFerPageService.creatOffer(payload);
+
+      if (response.status === 200) {
+        alert("Club created");
+        window.location.reload("");
+        setEdit(false);
+        setShowModal(false);
+        setSubmitted(true);
+      } else {
+        console.error("Unexpected response:", response);
+      }
+    } catch (error) {
+      console.error("Error creating offer:", error);
+    }
   };
+
   const handleSubmitExistingPlan_SetupUpdateFunc = () => {
     if (club_create_data.id) {
       OFFerPageService.updatOffer(club_create_data, club_create_data.id)
@@ -258,12 +269,12 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
                       <FormControl
                         size="small"
                         sx={{
-                          width: 350,
+                          width: 440,
                           padding: "0px",
                           height: "32px",
                           border: "none",
                           backgroundColor: "#2a3038",
-                          borderRadius: "10px",
+                          borderRadius: "5px",
                         }}
                         value={SelectedContent}
                         defaultValue={club_create_data?.Contents}

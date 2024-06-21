@@ -147,7 +147,6 @@ const ContentsList = () => {
           mobilevideolink,
           cast,
           creaw,
-       
           duration,
         } = ele;
 
@@ -316,7 +315,7 @@ const ContentsList = () => {
                             <td>
                               {active ? (
                                 <i
-                                  className="mdi mdi-checkbox-marked-circle-outline text-white"
+                                  class="fa-solid fa-toggle-on"
                                   onClick={() =>
                                     handleChangeStatusContentsRecord(
                                       value?._id,
@@ -326,7 +325,7 @@ const ContentsList = () => {
                                 ></i>
                               ) : (
                                 <i
-                                  className="mdi mdi-checkbox-blank-circle-outline text-white"
+                                  class="fa-solid fa-toggle-off"
                                   onClick={() =>
                                     handleChangeStatusContentsRecord(
                                       value?._id,
