@@ -37,14 +37,12 @@ const getDataforEpisodes = async () => {
   try {
     let res = await http.get(`contents/contentforepisode`);
     if (res.status === 200) {
-      console.log(res.data.data, "res.data.data")
       return res.data.data;
     }
   } catch (error) {
     console.error("Error fetching trending list:", error);
   }
 };
-
 
 const updateSeries = (data, idd) => {
   return http.put(`series/update/${idd}`, data, {
@@ -74,6 +72,7 @@ const SeriesPageService = {
   createSeries,
   updateSeries,
   changeSeriesStatus,
-  trashSeries, getDataforEpisodes
+  trashSeries,
+  getDataforEpisodes,
 };
 export default SeriesPageService;

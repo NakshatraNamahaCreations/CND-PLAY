@@ -145,7 +145,7 @@ export default function Series() {
     if (updatedWishlist.userid) {
       ContentsPageService.PostWishList(initialPostData, getlocalStorage?._id)
         .then((response) => {
-          setdisliked(true)
+          setdisliked(true);
           toast(response.data.message);
         })
         .catch((error) => {
@@ -270,6 +270,17 @@ export default function Series() {
               </div>
 
               <div className="row m-auto mt-3 ">
+                {Banners?.length > 0 && (
+                  <>
+                    <h4 className="row text_White m-auto mb-3 ">Series </h4>{" "}
+                    <CaroselComponent
+                      data={Banners}
+                      incrementViews={incrementViews}
+                      handleAddToWishlist={handleAddToWishlist}
+                      handlePurchaceContent={handlePurchaceContent}
+                    />
+                  </>
+                )}
                 {LatestReleased?.length > 0 && (
                   <>
                     <h4 className="row text_White m-auto mb-3 ">
@@ -324,34 +335,58 @@ export default function Series() {
                 )}
 
                 {Banners?.length === 0 &&
-                  LatestReleased === undefined &&
+                  LatestReleased?.length === 0 &&
                   IndiaSeries?.length === 0 &&
                   UpcomingSeries?.length === 0 &&
                   TrendingSeries?.length === 0 && (
                     <div
-                      className="col-md-12 m-auto"
+                      className="col-md-12 m-auto text-center"
                       style={{ height: "50vh" }}
                     >
-                      <h3
-                        className="text-white text-center m-auto"
-                        style={{
-                          position: "absolute",
-                          left: "45%",
-                          top: "50%",
-                        }}
-                      >
-                        {" "}
-                        Series Not Found
-                      </h3>
+                      <div className="row">
+                        <h3
+                          className="text-white  m-auto"
+                          style={{
+                            position: "absolute",
+                            // left: "45%",
+                            top: "50%",
+                          }}
+                        >
+                          {" "}
+                          Series Not Found
+                        </h3>
+                      </div>
                     </div>
                   )}
-                <Footer />
               </div>
             </div>
           ) : (
             <div className="row  mb-3 m-auto" style={{ height: "100vh" }}>
               <div className="row">
-                <h3 className="text-white mt-3">{categorgen} </h3>
+                <h3 className="text-white mt-3">
+                  {GenersWise?.length > 0 ? (
+                    categorgen
+                  ) : (
+                    <div
+                      className="col-md-12 m-auto text-center"
+                      style={{ height: "50vh" }}
+                    >
+                      <div className="row">
+                        <h3
+                          className="text-white  m-auto"
+                          style={{
+                            position: "absolute",
+                            // left: "45%",
+                            top: "50%",
+                          }}
+                        >
+                          {" "}
+                          Series Not Found
+                        </h3>
+                      </div>
+                    </div>
+                  )}
+                </h3>
               </div>
 
               <CaroselComponent
@@ -360,8 +395,6 @@ export default function Series() {
                 handleAddToWishlist={handleAddToWishlist}
                 handlePurchaceContent={handlePurchaceContent}
               />
-
-              <Footer />
             </div>
           )}
 
@@ -392,7 +425,8 @@ export default function Series() {
               </div>
             ))}
         </div>
-      )}
+      )}{" "}
+      <Footer />
     </>
   );
 }

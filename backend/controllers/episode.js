@@ -12,6 +12,7 @@ exports.createEpisode = async (req, res) => {
     duration,
     releaseDate,
     releaseTime,
+    active,
   } = req.body;
 
   let file = req.file?.filename;
@@ -31,6 +32,7 @@ exports.createEpisode = async (req, res) => {
       duration,
       releaseDate,
       releaseTime,
+      active,
     });
 
     const Episodesssave = await Episodes.save();
@@ -82,6 +84,8 @@ exports.updateEpisode = async (req, res) => {
       episodeNo,
       duration,
       video,
+      active,
+      releaseDate,
     } = req.body;
     let file = req.file ? req.file.filename : null;
     const findemovie = await Episodemodel.findOne({
@@ -100,6 +104,8 @@ exports.updateEpisode = async (req, res) => {
     findemovie.banner = banner || findemovie.banner;
     findemovie.episodeNo = episodeNo || findemovie.episodeNo;
     findemovie.duration = duration || findemovie.duration;
+    findemovie.active = active || findemovie.active;
+    findemovie.releaseDate = releaseDate || findemovie.releaseDate;
 
     if (findemovie.thumbnail) {
       findemovie.thumbnail = file || findemovie.thumbnail;
@@ -134,28 +140,22 @@ exports.deleteEpisode = async (req, res) => {
 exports.changeStatusEpisodes = async (req, res) => {
   const data = [];
   const { status } = req.body.data.data;
-  const { id } = req.body.data?.filter;
+  const { id } = req.body.data.filter;
 
-  if (id === undefined || status === undefined) {
-    return res.json({
-      link: `https://api.cndplay.com/api/episodes/update?id=${id}&active=${status}`,
-    });
-  } else {
-    try {
-      const result = await Episodemodel.updateOne(
-        { _id: id },
-        { $set: { active: status === 1 ? true : false } }
-      );
+  try {
+    const result = await Episodemodel.updateOne(
+      { _id: id },
+      { $set: { active: status === 1 ? true : false } }
+    );
 
-      if (result.nModified > 0) {
-        data.push({ id: id });
-        return res.json({ data: data });
-      } else {
-        return res.json({ error: "Document not found" });
-      }
-    } catch (error) {
-      console.error("Error updating document:", error);
-      return res.status(500).json({ error: "Internal server error" });
+    if (result.nModified > 0) {
+      data.push({ id: id });
+      return res.json({ data: data });
+    } else {
+      return res.json({ error: "Document not found" });
     }
+  } catch (error) {
+    console.error("Error updating document:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };

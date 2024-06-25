@@ -319,7 +319,7 @@ const TrendingList = () => {
                               <td>
                                 {active ? (
                                   <i
-                                    className="mdi mdi-checkbox-marked-circle-outline"
+                                    class="fa-solid fa-toggle-on"
                                     onClick={() =>
                                       handleChangeStatusIndieMovieRecord(
                                         value?._id,
@@ -329,7 +329,7 @@ const TrendingList = () => {
                                   ></i>
                                 ) : (
                                   <i
-                                    className="mdi mdi-checkbox-blank-circle-outline"
+                                    class="fa-solid fa-toggle-off"
                                     onClick={() =>
                                       handleChangeStatusIndieMovieRecord(
                                         value?._id,

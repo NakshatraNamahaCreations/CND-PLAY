@@ -39,7 +39,7 @@ const EpisodesList = () => {
         dataCount,
         page
       );
-
+      console.log(EpisodeData, "EpisodeData");
       setData(EpisodeData.data);
     } catch (error) {
       console.error("Error fetching Indie Movie list:", error);
@@ -73,7 +73,7 @@ const EpisodesList = () => {
         datacount: dataCount,
         page: page + 1,
       });
-      console.log(EpisodeData, "Data");
+
       if (Array.isArray(EpisodeData.data)) {
         setData(EpisodeData.data);
 
@@ -94,12 +94,12 @@ const EpisodesList = () => {
     }
   };
 
-  const handleChangeStatusEpisodesRecord = (idd, status) => {
+  const handleChangeStatusEpisodesRecord = (index, status) => {
     EpisodesPageService.changeEpisodesStatus({
       data: {
         status: status,
       },
-      filter: { id: idd },
+      filter: { id: index },
     })
 
       .then((data) => {
@@ -111,10 +111,10 @@ const EpisodesList = () => {
           datacount: dataCount,
           page: page,
         });
+        window.location.reload("");
       })
       .catch((e) => {
         //  console.log(e);
-        toast.error("Something Wrong. Please try again later.");
       });
   };
 
@@ -170,6 +170,8 @@ const EpisodesList = () => {
             releaseDate,
             duration,
             episodeNo,
+            video,
+            title,
           } = ele;
 
           const updatedData = {
@@ -183,6 +185,8 @@ const EpisodesList = () => {
             releaseDate: releaseDate,
             duration: duration,
             episodeNo: episodeNo,
+            video: video,
+            title: title,
           };
 
           child.current.showEpisodesCreateChildModal(updatedData);
@@ -215,8 +219,7 @@ const EpisodesList = () => {
     fetchData1();
   }, []);
   const fetchData1 = async () => {
-    let data = await SeriesPageService.fetchSeriesList();
-    console.log(data);
+    let data = await SeriesPageService.getDataforEpisodes();
     setseries_data(data);
   };
 
@@ -295,47 +298,49 @@ const EpisodesList = () => {
                       ) : (
                         Data &&
                         Data?.map((value, index) => {
+                          let {
+                            active,
+                            banner,
+                            title,
+                            episodes_name,
+                            episodeNo,
+                          } = value;
                           const matchingSeries = seriesData.find(
-                            (series) => series._id === value?.series_id
+                            (series) => series._id == value?.series_id
                           );
-
+                          console.log(matchingSeries, "matchingSeries");
                           return (
                             <tr key={index}>
                               <td className="textwidth">
-                                <img
-                                  alt=""
-                                  src={`https://api.cndplay.com/project/${value.thumbnail}`}
-                                />
+                                <img alt="" src={banner} />
                               </td>
                               <td className="textwidth">
                                 {" "}
                                 {matchingSeries ? matchingSeries.title : ""}
                               </td>
-                              <td className="textwidth">{value.title}</td>
+                              <td className="textwidth">{title}</td>
 
-                              <td className="textwidth">
-                                {value.episodes_name}
-                              </td>
-                              <td className="textwidth">{value.episodeNo}</td>
+                              <td className="textwidth">{episodes_name}</td>
+                              <td className="textwidth">{episodeNo}</td>
 
                               <td>
-                                {value.status ? (
+                                {active ? (
                                   <i
-                                    class="mdi mdi-checkbox-marked-circle-outline"
+                                    class="fa-solid fa-toggle-on"
                                     onClick={() =>
                                       handleChangeStatusEpisodesRecord(
                                         value?._id,
-                                        value.status ? 0 : 1
+                                        active ? 0 : 1
                                       )
                                     }
                                   ></i>
                                 ) : (
                                   <i
-                                    class="mdi mdi-checkbox-blank-circle-outline"
+                                    class="fa-solid fa-toggle-off"
                                     onClick={() =>
                                       handleChangeStatusEpisodesRecord(
                                         value?._id,
-                                        value.status ? 0 : 1
+                                        active ? 0 : 1
                                       )
                                     }
                                   ></i>

@@ -268,7 +268,7 @@ exports.update = async (req, res) => {
       creaw,
       duration,
     } = req.body;
-
+    console.log(req.body, "req.body");
     const findemovie = await ContentModel.findOne({
       _id: trendingidd,
     });
@@ -309,7 +309,7 @@ exports.update = async (req, res) => {
     findemovie.genres = genres || findemovie.genres;
     findemovie.creaw = creaw || findemovie.creaw;
     findemovie.duration = duration || findemovie.duration;
-   
+
     const updateMovie = await ContentModel.findOneAndUpdate(
       { _id: trendingidd },
       findemovie,
@@ -321,7 +321,6 @@ exports.update = async (req, res) => {
       date: updateMovie,
     });
   } catch (error) {
-    // console.log("error", error);
     return res.status(500).json({ error: "Unable to update the movie" });
   }
 };

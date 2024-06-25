@@ -188,6 +188,7 @@ const SeriesList = () => {
           datacount: dataCount,
           page: page,
         });
+        window.location.reload("");
       })
       .catch((e) => {
         //  console.log(e);
@@ -315,7 +316,7 @@ const SeriesList = () => {
                               <td>
                                 {active ? (
                                   <i
-                                    className="mdi mdi-checkbox-marked-circle-outline"
+                                    class="fa-solid fa-toggle-on"
                                     onClick={() =>
                                       handleChangeStatusUpcomingRecord(
                                         value?._id,
@@ -325,7 +326,7 @@ const SeriesList = () => {
                                   ></i>
                                 ) : (
                                   <i
-                                    className="mdi mdi-checkbox-blank-circle-outline"
+                                    class="fa-solid fa-toggle-off"
                                     onClick={() =>
                                       handleChangeStatusUpcomingRecord(
                                         value?._id,

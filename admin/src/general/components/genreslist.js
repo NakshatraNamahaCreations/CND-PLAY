@@ -72,7 +72,6 @@ const GenresList = () => {
     setTriggerContent(1);
   };
 
-  
   const handlePageNext = async () => {
     try {
       let districtData = await GenresPageService.fetchGenresList({
@@ -118,7 +117,7 @@ const GenresList = () => {
         });
       })
       .catch((e) => {
-       //  console.log(e);
+        //  console.log(e);
       });
   };
   const handleEditGenresRecord = (id) => {
@@ -243,7 +242,7 @@ const GenresList = () => {
                               <td>
                                 {active ? (
                                   <i
-                                    className="mdi mdi-checkbox-marked-circle-outline"
+                                    class="fa-solid fa-toggle-on"
                                     onClick={() =>
                                       handleChangeStatusGenresRecord(
                                         value?._id,
@@ -253,7 +252,7 @@ const GenresList = () => {
                                   ></i>
                                 ) : (
                                   <i
-                                    className="mdi mdi-checkbox-blank-circle-outline"
+                                    class="fa-solid fa-toggle-off"
                                     onClick={() =>
                                       handleChangeStatusGenresRecord(
                                         value?._id,

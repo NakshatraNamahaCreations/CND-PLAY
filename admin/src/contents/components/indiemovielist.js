@@ -319,7 +319,7 @@ const IndieMovieList = () => {
                               <td>
                                 {active ? (
                                   <i
-                                    className="mdi mdi-checkbox-marked-circle-outline text-white"
+                                    class="fa-solid fa-toggle-on"
                                     onClick={() =>
                                       handleChangeStatusIndieMovieRecord(
                                         value?._id,
@@ -329,7 +329,7 @@ const IndieMovieList = () => {
                                   ></i>
                                 ) : (
                                   <i
-                                    className="mdi mdi-checkbox-blank-circle-outline text-white"
+                                    class="fa-solid fa-toggle-off"
                                     onClick={() =>
                                       handleChangeStatusIndieMovieRecord(
                                         value?._id,

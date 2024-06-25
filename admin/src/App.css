@@ -238,4 +238,7 @@ code {
 .fa-toggle-on
 {
   color: rgb(107, 198, 223);
+}.color-green{
+  color: green !important;
+ 
 }

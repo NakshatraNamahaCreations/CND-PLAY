@@ -53,15 +53,28 @@ const ContentsCreate = forwardRef((props, ref) => {
     creaw: "",
   };
 
-  var temp_publish_year_arr = [];
-  for (let index = new Date().getFullYear(); index > 1950; index--) {
-    temp_publish_year_arr.push(index);
-  }
   const [contents_data, set_contents_data] = useState(initialContentsData);
 
+  const generateYears = () => {
+    let years = [];
+    for (let i = new Date().getFullYear(); i > 1950; i--) {
+      years.push(i);
+    }
+    return years;
+  };
+
+  const [publishYears, setPublishYears] = useState(generateYears());
+  const [publishYear, setPublishYear] = useState("");
+
+  useEffect(() => {
+    if (contents_data?.publish) {
+      const year = new Date(contents_data?.publish).getFullYear();
+      setPublishYear(year);
+    }
+  }, [contents_data.publish]);
   const [showModal, setShowModal] = useState(false);
   const [is_edit, setEdit] = useState(false);
-  const [publish_years, setPublishYears] = useState(temp_publish_year_arr);
+
   const [SelctedGeners, setSelctedGeners] = React.useState(
     GenresData.map((item) => item.name)
   );
@@ -186,8 +199,35 @@ const ContentsCreate = forwardRef((props, ref) => {
   const handleSubmitExistingContentsUpdateFunc = () => {
     if (contents_data.id) {
       let data = {
-        contents_data,
+        background_color: contents_data.background_color?.startsWith("#")
+          ? contents_data.background_color?.substring(1)
+          : contents_data.background_color,
+        section: contents_data.section,
+        type: contents_data.type,
+        title: contents_data.title,
+        amount: contents_data.amount,
+        validity: contents_data.validity,
+        storyline: contents_data.storyline,
+        isrecommended: contents_data.isrecommended,
+        publish: contents_data.publish,
+        banner: contents_data.banner,
+        poster: contents_data.poster,
+        video: contents_data.video,
         genres: SelctedGeners,
+        likes: contents_data.likes,
+        views: contents_data.views,
+        rating: contents_data.rating,
+        searched: contents_data.searched,
+        ContentRating: contents_data.ContentRating,
+        duration: contents_data.duration,
+        isCarousel: contents_data.isCarousel,
+        trailer: contents_data.trailer,
+        subtitle: contents_data.subtitle,
+        active: contents_data.active,
+        mobilebanner: contents_data.mobilebanner,
+        tvhomescreenbnr: contents_data.tvhomescreenbnr,
+        typeOfMovie: contents_data.typeOfMovie,
+        titleImg: contents_data.titleImg,
         cast: CastData,
         creaw: CrewData,
       };
@@ -205,10 +245,6 @@ const ContentsCreate = forwardRef((props, ref) => {
     }
   };
 
-  useEffect(() => {
-    FetchGeners();
-  }, []);
-  let count = 0;
   const [ContentData, setContentData] = useState([]);
   const FetchGeners = async () => {
     let Genres = await GenresPageService.getAllGenersData();
@@ -216,6 +252,25 @@ const ContentsCreate = forwardRef((props, ref) => {
     setContentData(ContentData1);
     setGenresData(Genres.data);
   };
+  const [hasMoreThanTenRecommended, setHasMoreThanTenRecommended] =
+    useState(false);
+
+  useEffect(() => {
+    FetchGeners();
+
+    let count = 0;
+    ContentData.forEach((Ele) => {
+      if (Ele.isrecommended) {
+        count++;
+      }
+    });
+
+    if (count > 10) {
+      setHasMoreThanTenRecommended(true);
+    } else {
+      setHasMoreThanTenRecommended(false);
+    }
+  }, []);
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -293,7 +348,7 @@ const ContentsCreate = forwardRef((props, ref) => {
       return updatedCrew;
     });
   };
-
+ 
   return (
     <div className="mt-2 row">
       <div className="mt-2 container-fluid">
@@ -412,21 +467,15 @@ const ContentsCreate = forwardRef((props, ref) => {
                     </div>
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Recommended Content</label>
-                      {ContentData.map((Ele) => {
-                        if (Ele.isrecommended === true && count <= 10) {
-                          count++;
-                        }
-                        return null;
-                      })}
 
                       <select
-                        disabled={count === 10}
                         className="content_section_data form-select"
                         name="isrecommended"
                         defaultValue={contents_data.isrecommended}
                         onChange={handleChange}
                       >
                         <option
+                          disabled={!hasMoreThanTenRecommended}
                           selected={
                             contents_data.isrecommended === true ? true : false
                           }
@@ -444,7 +493,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                           No
                         </option>
                       </select>
-                      {count === 10 && (
+                      {!hasMoreThanTenRecommended && (
                         <p className="text-white">
                           Already 10 has been Recommended
                         </p>
@@ -756,22 +805,21 @@ const ContentsCreate = forwardRef((props, ref) => {
                       <select
                         className="content_section_data form-select"
                         name="publish"
-                        defaultValue={contents_data.publish}
-                        onChange={handleChange}
+                        value={publishYear}
+                        onChange={(e) => {
+                          setPublishYear(e.target.value);
+                          handleChange(e);
+                        }}
                       >
                         <option value=""> - Select Publish Year - </option>
-                        {publish_years.map((value_p, index_p) => {
-                          return (
-                            <option
-                              selected={contents_data.publish}
-                              value={value_p}
-                            >
-                              {value_p}
-                            </option>
-                          );
-                        })}
+                        {publishYears.map((value_p, index_p) => (
+                          <option key={index_p} value={value_p}>
+                            {value_p}
+                          </option>
+                        ))}
                       </select>
                     </div>
+
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Title Image Link</label>
                       <input

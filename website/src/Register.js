@@ -379,7 +379,7 @@ const Register = () => {
                   />
                 </div>
 
-                {/* <div className="col-md-6">
+                <div className="col-md-6">
                   <button
                     onClick={onSignup}
                     className="row m-auto p-2 bg-emerald-600 w-full flex gap-1 items-center justify-center py-2.5 text-white rounded"
@@ -391,7 +391,7 @@ const Register = () => {
                     </span>
                     <span className="col-md-10">Send OTP</span>
                   </button>
-                </div> */}
+                </div>
               </div>
 
               <div className="mt-3 row m-auto">

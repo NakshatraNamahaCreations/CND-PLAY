@@ -6,7 +6,7 @@ exports.list = async (req, res) => {
     const data = [];
     const {datacount, page} = req.query;
     if(datacount === undefined || page === undefined) {
-        return res.json({"link" : `https://api.cndplay.com/general/list?datacount=${datacount}&page=${page}`});
+        return res.json({"link" : `http://localhost:8800/general/list?datacount=${datacount}&page=${page}`});
     } else {
         const limit = (datacount === null ? null : parseInt(datacount))
         const offset = (page === null ? null : parseInt(page))*limit - limit;
@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
     const data = [];
     const {facebook, instagram, youtube} = req.query;
     if(facebook === undefined || instagram === undefined || youtube === undefined) {
-        return res.json({"link" : `https://api.cndplay.com/general/create?facebook=${facebook}&instagram=${instagram}&youtube=${youtube}`});
+        return res.json({"link" : `http://localhost:8800/general/create?facebook=${facebook}&instagram=${instagram}&youtube=${youtube}`});
     } else {
         const general = await db.collection('general').add({
             facebook: facebook,
@@ -55,7 +55,7 @@ exports.update = async (req, res) => {
     const data = [];
     const {id, facebook, instagram, youtube} = req.query;
     if(likes === undefined || views === undefined) {
-        return res.json({"link" : `https://api.cndplay.com/general/update?id=${id}&facebook=${facebook}&instagram=${instagram}&youtube=${youtube}`});
+        return res.json({"link" : `http://localhost:8800/general/update?id=${id}&facebook=${facebook}&instagram=${instagram}&youtube=${youtube}`});
     } else {
         const general = await db.collection('general').doc(id).update({
             facebook: facebook,

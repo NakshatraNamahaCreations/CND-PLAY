@@ -193,6 +193,7 @@ const ContentsList = () => {
       }
     });
   };
+  
 
   const handleTrashContentsRecord = async (idd) => {
     const confirmed = window.confirm(
@@ -301,7 +302,7 @@ const ContentsList = () => {
                         return (
                           <tr key={index}>
                             <td>{displayIndex}</td>
-                            {console.log(value)}
+
                             <td>
                               {" "}
                               <img src={poster} alt="" />

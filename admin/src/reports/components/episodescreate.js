@@ -9,6 +9,25 @@ import "react-toastify/dist/ReactToastify.css";
 import SeriesPageService from "../../reports/service/seriespage.service";
 const EpisodesCreate = forwardRef((props, ref) => {
   const [thumbnail, setThumbnail] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    setThumbnail(file);
+    setUploading(true);
+
+    // Create a preview URL
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result);
+      setUploading(false);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+    }
+  };
   const [is_uploading, setUploading] = useState(false);
   const [seriesData, setseries_data] = useState([]);
   useEffect(() => {
@@ -17,7 +36,6 @@ const EpisodesCreate = forwardRef((props, ref) => {
   const fetchData1 = async () => {
     let data = await SeriesPageService.getDataforEpisodes();
     setseries_data(data);
-    
   };
 
   const initialEpisodesData = {
@@ -31,6 +49,7 @@ const EpisodesCreate = forwardRef((props, ref) => {
     episodeNo: "",
     duration: "",
     releaseDate: "",
+    active: false,
   };
 
   const [episodes_data, set_episodes_data] =
@@ -59,6 +78,7 @@ const EpisodesCreate = forwardRef((props, ref) => {
         duration: single_episodes_data?.duration,
         episodeNo: single_episodes_data.episodeNo,
         releaseDate: single_episodes_data.releaseDate,
+        active: single_episodes_data.active,
       });
     },
   }));
@@ -100,6 +120,7 @@ const EpisodesCreate = forwardRef((props, ref) => {
     formData.append("episodeNo", episodes_data?.episodeNo);
     formData.append("releaseDate", episodes_data?.releaseDate);
 
+    formData.append("active", episodes_data?.active);
     EpisodesPageService.createEpisodes(formData)
       .then((response) => {
         if (response.status === 200) {
@@ -188,13 +209,13 @@ const EpisodesCreate = forwardRef((props, ref) => {
                         <option value=""> - Choose Series - </option>
                         {seriesData && seriesData && seriesData?.length > 0
                           ? seriesData.map((value, index) => {
-                            return (
-                              <option value={value?._id}>
-                                {" "}
-                                {value.title}{" "}
-                              </option>
-                            );
-                          })
+                              return (
+                                <option value={value?._id}>
+                                  {" "}
+                                  {value.title}{" "}
+                                </option>
+                              );
+                            })
                           : ""}
                       </select>
                     </div>
@@ -292,16 +313,23 @@ const EpisodesCreate = forwardRef((props, ref) => {
                     </div>
                     <div className="mb-2 col-md-4">
                       Thumbnail
-                      <label className="form-label">
-                        <input
-                          type="file"
-                          name="thumbnail"
-                          onChange={(e) => {
-                            setThumbnail(e.target.files[0]);
-                            setUploading(true);
-                          }}
-                        />
-                      </label>
+                      <div>
+                        <label className="form-label">
+                          <input
+                            type="file"
+                            name="thumbnail"
+                            onChange={handleThumbnailChange}
+                          />
+                          {preview && (
+                            <img
+                              src={preview}
+                              width={100}
+                              height={100}
+                              alt="Preview"
+                            />
+                          )}
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>

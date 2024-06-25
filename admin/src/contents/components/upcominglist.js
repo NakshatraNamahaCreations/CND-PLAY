@@ -123,7 +123,6 @@ const UpcomingList = () => {
           mobilevideolink,
           cast,
           creaw,
-
           duration,
         } = ele;
 
@@ -318,7 +317,7 @@ const UpcomingList = () => {
                               <td>
                                 {active ? (
                                   <i
-                                    className="mdi mdi-checkbox-marked-circle-outline"
+                                    class="fa-solid fa-toggle-on"
                                     onClick={() =>
                                       handleChangeStatusContentsRecord(
                                         value?._id,
@@ -328,7 +327,7 @@ const UpcomingList = () => {
                                   ></i>
                                 ) : (
                                   <i
-                                    className="mdi mdi-checkbox-blank-circle-outline"
+                                    class="fa-solid fa-toggle-off"
                                     onClick={() =>
                                       handleChangeStatusContentsRecord(
                                         value?._id,
