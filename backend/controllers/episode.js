@@ -62,7 +62,7 @@ exports.list = async (req, res) => {
 };
 exports.getEpisode = async (req, res) => {
   try {
-    const Episode = await Episodemodel.find({});
+    const Episode = await Episodemodel.find({active:true});
     if (Episode) {
       return res.status(200).json(Episode);
     }

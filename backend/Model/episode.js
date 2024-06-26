@@ -13,6 +13,7 @@ const EpisodesShema = new EpisodesMongoose.Schema(
     duration: String,
     releaseDate: String,
     releaseTime: String,
+    // added 6/25/2024
     active: Boolean,
   },
   { timestamps: true }
