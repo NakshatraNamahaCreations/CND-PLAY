@@ -252,7 +252,7 @@ export default function WatchVideoMode() {
   const [paymentError, setPaymentError] = useState(null);
   const handlePayment = async (item) => {
     if (!getlocalStorage) {
-      return window.location.assign("/login")
+      return window.location.assign("/login");
     }
 
     const txnid = `Txn${Date.now()}`;
@@ -433,10 +433,10 @@ export default function WatchVideoMode() {
 
   const handleRatingOpen = () => {
     if (!getlocalStorage) {
-      return window.location.assign("/login")
+      return window.location.assign("/login");
     }
-    setRating(true)
-  }
+    setRating(true);
+  };
   return (
     <>
       {Wishlist && (
@@ -473,7 +473,7 @@ export default function WatchVideoMode() {
         </div>
       ) : (
         <div className="col-md-12  bg-mg">
-          <div className="col-md-12">
+          <div className="col-md-12 watchmovie-container">
             <div className="watchmovie-overlay"></div>
             <>
               <div className="row m-auto">
@@ -484,8 +484,6 @@ export default function WatchVideoMode() {
                   src={ContentData?.banner}
                 />
               </div>
-
-              {/* {hideInfo && ( */}
               <div className="row m-auto">
                 <div className="col-md-12 informat  m-auto">
                   <div className="row ms-4">
@@ -623,8 +621,6 @@ export default function WatchVideoMode() {
                                 <span className="col-md-2 me-2 m-auto fnt14 detailsList relativeP">
                                   <StarBorderIcon
                                     onClick={handleRatingOpen}
-
-
                                     className="addicons fnt30"
                                   />
                                   <button className="details">
@@ -665,7 +661,6 @@ export default function WatchVideoMode() {
                   </div>
                 </div>
               </div>
-              {/* )} */}
             </>
           </div>
           <div className="row m-auto mt-5 mb-5">
@@ -673,17 +668,19 @@ export default function WatchVideoMode() {
             <div className="col-md-2">
               <div className="d-flex">
                 <p
-                  className={`cursor text_White textbold m-auto ${(WachedMovie && WatchedIndex === 0) || WatchedIndex === null
-                    ? "activeWathced"
-                    : ""
-                    }`}
+                  className={`cursor text_White textbold m-auto ${
+                    (WachedMovie && WatchedIndex === 0) || WatchedIndex === null
+                      ? "activeWathced"
+                      : ""
+                  }`}
                   onClick={() => handleSelect(0)}
                 >
                   Related
                 </p>
                 <p
-                  className={`cursor text_White textbold m-auto ${WachedMovie & (WatchedIndex === 1) ? "activeWathced" : ""
-                    }`}
+                  className={`cursor text_White textbold m-auto ${
+                    WachedMovie & (WatchedIndex === 1) ? "activeWathced" : ""
+                  }`}
                   onClick={() => handleSelect(1)}
                 >
                   Details
@@ -842,14 +839,6 @@ export default function WatchVideoMode() {
                     <p>Twitter</p>
                   </div>
                 </div>
-                {/* <div className="col-md-3">
-                  <div className="row text-center m-auto">
-                    <span>
-                      <PinterestIcon onClick={redirectToPinterest} />
-                    </span>
-                    <p>Pinterest</p>
-                  </div>
-                </div> */}
               </div>
 
               <Button
@@ -878,10 +867,11 @@ export default function WatchVideoMode() {
                 </div>
                 <button
                   disabled={Ratevalue < 0 ? true : false}
-                  className={`${Ratevalue
-                    ? "ratehisbg col-md-4  m-auto "
-                    : "ratehis col-md-2  m-auto"
-                    }`}
+                  className={`${
+                    Ratevalue
+                      ? "ratehisbg col-md-4  m-auto "
+                      : "ratehis col-md-2  m-auto"
+                  }`}
                   onClick={() => handleSubmitRating(ContentData?._id)}
                 >
                   Rate

@@ -16,7 +16,7 @@ router.get("/getwishlist/:id", authenticate.getWishlistById);
 router.get("/getalluser", authenticate.getAlluser);
 router.get("/getbyuserid/:idd", authenticate.getByUserId);
 router.get("/getuserbyfirebaseid/:id", authenticate.getUserByFId);
-
+// router.get("/findanddeletenine", authenticate.findanddeletenine);
 // Payment
 
 module.exports = router;

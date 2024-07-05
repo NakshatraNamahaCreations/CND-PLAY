@@ -9,14 +9,18 @@ const creatOffer = (data) => {
   });
 };
 
-const fetchOfferList = async () => {
-  let response = await http.get(`offer/getdata`);
 
-  if (response.status === 200) {
-    return response.data;
+const fetchOfferList = async (datacount, page) => {
+  let res = await http.get(`offer/getdata`, {
+    params: {
+      datacount: datacount,
+      page: page,
+    },
+  });
+  if (res.status === 200) {
+    return res.data;
   }
 };
-
 const updatOffer = (data, idd) => {
   return http.put(`offer/update/${idd}`, data, {
     headers: {

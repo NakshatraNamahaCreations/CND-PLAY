@@ -1,0 +1,26 @@
+@media only screen and (min-width: 1200px) {
+  .banner {
+    justify-content: space-around; /* Adjust to center items */
+  }
+  .mediaDiv {
+    flex: 0 0 22%; /* Show 4 items on large screens */
+  }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+  .mediaDiv {
+    flex: 0 0 30%; /* Show 3 items on medium screens */
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .mediaDiv {
+    flex: 0 0 45%; /* Show 2 items on tablets */
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .mediaDiv {
+    flex: 0 0 90%; /* Show 1 item on small screens */
+  }
+}

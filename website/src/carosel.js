@@ -8,6 +8,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CheckIcon from "@mui/icons-material/Check";
 import Moment from "react-moment";
 import RegisterPage from "./DataApi/Register";
+import "./Carosel.css"
 
 export default function CaroselComponent({ data, handleAddToWishlist }) {
   const [startIndex, setStartIndex] = useState(0);

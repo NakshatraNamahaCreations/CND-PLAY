@@ -263,7 +263,7 @@ const OfferList = () => {
                             <td>
                               {active ? (
                                 <i
-                                  className="mdi mdi-checkbox-marked-circle-outline text-white"
+                                  className="fa-solid fa-toggle-on"
                                   onClick={() =>
                                     handleChangeStatusContentsRecord(
                                       value?._id,
@@ -273,7 +273,7 @@ const OfferList = () => {
                                 ></i>
                               ) : (
                                 <i
-                                  className="mdi mdi-checkbox-blank-circle-outline text-white"
+                                  className="fa-solid fa-toggle-off"
                                   onClick={() =>
                                     handleChangeStatusContentsRecord(
                                       value?._id,

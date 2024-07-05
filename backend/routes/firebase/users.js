@@ -18,5 +18,6 @@ router.get("/getdata", users.getdata);
 router.put("/update/:useridd", users.update);
 router.post("/trash/:deleid", users.deleteuser);
 
+
 router.post("/login", users.Login);
 module.exports = router;

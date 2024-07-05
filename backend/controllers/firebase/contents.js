@@ -268,7 +268,7 @@ exports.update = async (req, res) => {
       creaw,
       duration,
     } = req.body;
-    console.log(req.body, "req.body");
+
     const findemovie = await ContentModel.findOne({
       _id: trendingidd,
     });

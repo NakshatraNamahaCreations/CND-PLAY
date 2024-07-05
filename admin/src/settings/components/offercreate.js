@@ -1,13 +1,8 @@
 import React, { useState, forwardRef, useEffect } from "react";
 import OFFerPageService from "../service/offercreate.service";
-
 import "react-toastify/dist/ReactToastify.css";
 import ContentsPageService from "../../contents/service/contentspage.service";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
+import Multiselect from "multiselect-react-dropdown";
 
 const OfferOfClubCreate = forwardRef((props, ref) => {
   const initialPlan_SetupData = {
@@ -20,89 +15,45 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
     poster: "",
   };
 
+  const [is_edit, setEdit] = useState(false);
   const [ContentData, setContentData] = useState([]);
-  const [SelectedContent, setSelectedContent] = React.useState([]);
-
-  const handleChange1 = (event) => {
-    const { value } = event.target;
-    setSelectedContent(value);
-  };
+  const [selectedCatagory, setSelectedCatagory] = useState([]);
 
   const fetchContent = async () => {
-    let ContentData1 = await ContentsPageService.fetchContentsAllList();
-    setContentData(ContentData1);
+    try {
+      const ContentData1 = await ContentsPageService.fetchContentsAllList();
+      setContentData(ContentData1);
+    } catch (error) {
+      console.error("Error fetching contents:", error);
+    }
   };
 
   useEffect(() => {
     fetchContent();
   }, []);
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
-  const [club_create_data, set_club_create_data] = React.useState(
-    initialPlan_SetupData
-  );
+  const [club_create_data, set_club_create_data] = useState(initialPlan_SetupData);
   const [showModal, setShowModal] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
-  const [is_edit, setEdit] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  React.useImperativeHandle(ref, () => ({
-    showOfferCreateChildModal(single_club_create_data) {
-      setEdit(true);
-      showPlanSetupCreateModal();
-      set_club_create_data({
-        id: single_club_create_data?.id,
-        title: single_club_create_data?.title,
-        subtitle: single_club_create_data?.subtitle,
-        price: single_club_create_data?.price,
-        image: single_club_create_data?.image,
-        Contents: single_club_create_data?.Contents,
-        validity: single_club_create_data.validity,
-        active: single_club_create_data.active,
 
-        poster: single_club_create_data.poster,
-      });
-    },
-  }));
-  // console.log(club_create_data, "club_create_data");
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    set_club_create_data({
-      ...club_create_data,
-      [name]: value,
-    });
-  };
   const showPlanSetupCreateModal = () => {
     set_club_create_data(initialPlan_SetupData);
-    setShowModal("show");
+    setSelectedCatagory([]);
+    setShowModal(true);
   };
-  const showPlanSetupFilter = (status) => {
-    set_club_create_data(initialPlan_SetupData);
 
-    setShowFilter(status);
-  };
   const hidePlan_SetupCreateModal = () => {
     setEdit(false);
-    setShowModal("");
+    setShowModal(false);
   };
-  console.log(SelectedContent, "SelectedContent");
+
   const handleSubmitNewPlan_SetupCreateFunc = async () => {
-    if (!SelectedContent || SelectedContent.length === 0) {
+    if (!selectedCatagory || selectedCatagory.length === 0) {
       return alert("Please Select Offer Content");
     }
 
-    let data = SelectedContent.map((Ele) => ({
-      title: Ele.title,
-      contentId: Ele._id,
+    const data = selectedCatagory.map((item) => ({
+      title: item.title,
+      contentId: item.contentId,
     }));
 
     const payload = {
@@ -121,10 +72,9 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
 
       if (response.status === 200) {
         alert("Club created");
-        window.location.reload("");
+        window.location.reload(""); // Consider using React state for updates instead of reloading
         setEdit(false);
         setShowModal(false);
-        setSubmitted(true);
       } else {
         console.error("Unexpected response:", response);
       }
@@ -134,55 +84,92 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
   };
 
   const handleSubmitExistingPlan_SetupUpdateFunc = () => {
+    const data = selectedCatagory.map((item) => ({
+      title: item.title,
+      contentId: item.contentId,
+    }));
+
+    const payload = {
+      title: club_create_data?.title,
+      subtitle: club_create_data?.subtitle,
+      price: club_create_data?.price,
+      image: club_create_data?.image,
+      validity: club_create_data?.validity,
+      active: club_create_data?.active,
+      poster: club_create_data?.poster,
+      Contents: data,
+    };
+
     if (club_create_data.id) {
-      OFFerPageService.updatOffer(club_create_data, club_create_data.id)
+      OFFerPageService.updatOffer(payload, club_create_data.id)
         .then((response) => {
           alert("Club updated successfully", response);
-          window.location.reload("/");
+          window.location.reload("/"); // Consider using React state for updates instead of reloading
         })
         .catch((error) => {
-          // console.error("Error updating Palns ", error);
+          console.error("Error updating Plans ", error);
         });
     } else {
-      // console.error("Error: Palns.id is undefined");
+      console.error("Error: Plans.id is undefined");
     }
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    showOfferCreateChildModal(single_club_create_data) {
+      setEdit(true);
+      showPlanSetupCreateModal();
+      set_club_create_data({
+        id: single_club_create_data?.id,
+        title: single_club_create_data?.title,
+        subtitle: single_club_create_data?.subtitle,
+        price: single_club_create_data?.price,
+        image: single_club_create_data?.image,
+        validity: single_club_create_data.validity,
+        active: single_club_create_data.active,
+        poster: single_club_create_data.poster,
+        Contents: single_club_create_data?.Contents,
+      });
+      setSelectedCatagory(single_club_create_data?.Contents || []);
+    },
+  }));
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    set_club_create_data({
+      ...club_create_data,
+      [name]: value,
+    });
+  };
+
+  const onSelectCatagory = (selectedList, selectedItem) => {
+    setSelectedCatagory(selectedList);
+  };
+
+  const onRemoveCatagory = (selectedList, removedItem) => {
+    setSelectedCatagory(selectedList);
   };
 
   return (
     <div className="mt-2 row">
       <div className="mt-2 container-fluid">
-        {/* <i
-          className="mdi mdi-filter-variant float-right mr-2"
-          onClick={() => showPlanSetupFilter(!showFilter)}
-        ></i> */}
         <i
           className="mdi mdi-plus-circle-outline float-right mr-2"
           onClick={showPlanSetupCreateModal}
         ></i>
       </div>
-      {/* <div className="mt-2 mb-2 container-fluid">
-        <div className="row">{showFilter ? <PlanSetupFilter /> : ""}</div>
-      </div> */}
-      {showModal === "show" ? (
-        <div className="modal-backdrop fade show"></div>
-      ) : (
-        ""
-      )}
+      {showModal ? <div className="modal-backdrop fade show"></div> : ""}
       <div
-        className={`modal fade f-OpenSans fs-14px ${showModal} `}
+        className={`modal fade f-OpenSans fs-14px ${showModal ? "show" : ""}`}
         tabIndex="-1"
         role="dialog"
         aria-hidden="true"
         id="basic_settingsCreate"
-        style={{ display: showModal === "show" ? "block" : "none" }}
+        style={{ display: showModal ? "block" : "none" }}
       >
         <div className="modal-dialog modal-dialog-centered modal-md">
           <div className="modal-content">
             <div className="modal-header">
-              <h5
-                className="modal-title f-OpenSans fs-14px"
-                id="Plan_setupCreateTitle"
-              >
+              <h5 className="modal-title f-OpenSans fs-14px" id="Plan_setupCreateTitle">
                 Create Club
               </h5>
               <button
@@ -202,7 +189,7 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
                       <input
                         className="form-control form-control-sm"
                         name="title"
-                        defaultValue={club_create_data.title}
+                        value={club_create_data.title}
                         onChange={handleChange}
                       />
                     </div>
@@ -211,29 +198,25 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
                       <input
                         className="form-control form-control-sm"
                         name="subtitle"
-                        defaultValue={club_create_data.subtitle}
+                        value={club_create_data.subtitle}
                         onChange={handleChange}
                       />
                     </div>
-
                     <div className="mb-2 col-md-12">
                       <label className="form-label">Banner(Web)</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
-                        id="gateway_business_account_user_id"
                         name="image"
                         value={club_create_data.image}
                         onChange={handleChange}
                       />
                     </div>
-
                     <div className="mb-2 col-md-12">
                       <label className="form-label">Poster(Mob)</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
-                        id="gateway_business_account_user_id"
                         name="poster"
                         value={club_create_data.poster}
                         onChange={handleChange}
@@ -244,70 +227,40 @@ const OfferOfClubCreate = forwardRef((props, ref) => {
                       <input
                         type="text"
                         className="form-control form-control-sm"
-                        id="gateway_business_account_user_id"
                         name="price"
                         value={club_create_data.price}
                         onChange={handleChange}
-                      ></input>
+                      />
                     </div>
                     <div className="mb-2 col-md-12">
                       <label className="form-label">Validity</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
-                        id="gateway_business_account_user_id"
                         name="validity"
                         value={club_create_data.validity}
                         onChange={handleChange}
-                      ></input>
+                      />
                     </div>
                     <div className="mb-2 col-md-12">
                       <label className="form-label">
                         Select Content - (No. of selected Content{" "}
-                        {SelectedContent?.length})
+                        {selectedCatagory?.length})
                       </label>
-                      <FormControl
-                        size="small"
-                        sx={{
-                          width: 440,
-                          padding: "0px",
-                          height: "32px",
-                          border: "none",
-                          backgroundColor: "#2a3038",
-                          borderRadius: "5px",
-                        }}
-                        value={SelectedContent}
-                        defaultValue={club_create_data?.Contents}
-                      >
-                        <Select
-                          labelId="demo-multiple-checkbox-label"
-                          id="demo-multiple-checkbox"
-                          multiple
-                          value={SelectedContent}
-                          onChange={handleChange1}
-                          renderValue={(selected) =>
-                            selected.map((s) => s.title).join(", ")
-                          }
-                          MenuProps={MenuProps}
-                          className="text-white"
-                        >
-                          {ContentData.map((cont, index) => (
-                            <MenuItem
-                              key={`${cont.title}-${index}`}
-                              value={cont}
-                            >
-                              <Checkbox
-                                checked={SelectedContent.some(
-                                  (item) => item._id === cont._id
-                                )}
-                              />
-                              <ListItemText className="text-white">
-                                <span>{cont.title}</span>
-                              </ListItemText>
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+
+                      <Multiselect
+                        className="mt-3"
+                        options={ContentData.map((ele) => ({
+                          title: ele.title,
+                          contentId: ele._id,
+                        }))}
+                        placeholder="Select content"
+                        selectedValues={selectedCatagory}
+                        onSelect={onSelectCatagory}
+                        onRemove={onRemoveCatagory}
+                        displayValue="title"
+                        showCheckbox={true}
+                      />
                     </div>
                   </div>
                 </div>

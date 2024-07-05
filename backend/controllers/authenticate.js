@@ -52,6 +52,48 @@ exports.makeregister = async (req, res) => {
     return res.status(500).json({ err: "err while creating user" });
   }
 };
+
+
+exports.findanddeletenine = async (req, res) => {
+  try {
+    // Fetch customers from the database
+    let data = await authModel.find({});
+   
+    // Iterate through each customer
+    const updatedCustomers = data.map(customer => {
+      // Check if the phone field exists and is not null
+      if (customer.phone) {
+        let phoneStr = customer.phone.toString();
+        console.log("phoneStr",phoneStr)
+
+        // Check if the phone number starts with '91' and has a length of 12
+        if (phoneStr.startsWith('91') && phoneStr.length === 12) {
+          // Remove '91' from the beginning
+          phoneStr = phoneStr.slice(2);
+
+          // Update the customer object with the new phone number
+          customer.phone = phoneStr;
+        }
+      } else {
+        console.log(`Customer with ID ${customer._id} has an invalid phone number.`);
+      }
+
+      return customer;
+    });
+
+    // Save the updated customers back to the database
+    for (let customer of updatedCustomers) {
+      await authModel.findByIdAndUpdate(customer._id, { phone: customer.phone });
+    }
+
+    // Return the updated data
+    return res.status(200).json({ success: true, updatedCustomers });
+  } catch (error) {
+    // Handle any errors that occurred during the operation
+    console.error(error.message,"message");
+    return res.status(500).json({ error: "Failed to retrieve or update customers" });
+  }
+};
 exports.makelogout = async (req, res) => {
   try {
     const existingUser = await authModel.findOne({ _id });

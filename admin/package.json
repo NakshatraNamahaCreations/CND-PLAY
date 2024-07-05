@@ -25,6 +25,7 @@
     "dotenv": "^16.0.1",
     "jquery": "^3.6.0",
     "moment": "^2.29.3",
+    "multiselect-react-dropdown": "^2.0.25",
     "pretty-checkbox": "^3.0.3",
     "react": "^18.1.0",
     "react-apexcharts": "^1.4.1",

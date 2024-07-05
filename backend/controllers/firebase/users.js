@@ -24,6 +24,7 @@ exports.create = async (req, res) => {
   }
 };
 
+
 exports.getdata = async (req, res) => {
   try {
     const userdata = await userModel.find({});
@@ -71,7 +72,7 @@ exports.Login = async (req, res) => {
     const { email, password } = req.body;
 
     const existingUser = await userModel.findOne({ password });
-
+             console.log(existingUser,"existingUser")
     if (!existingUser) {
       return res.status(400).json({ error: "User does not exist" });
     }
