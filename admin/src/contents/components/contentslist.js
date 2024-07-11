@@ -148,6 +148,7 @@ const ContentsList = () => {
           cast,
           creaw,
           duration,
+          lang,
         } = ele;
 
         const updatedData = {
@@ -178,7 +179,6 @@ const ContentsList = () => {
           mobilebanner: mobilebanner,
           tvhomescreenbnr: tvhomescreenbnr,
           background_color: background_color,
-
           active: active,
           dataCount,
           page,
@@ -187,13 +187,13 @@ const ContentsList = () => {
           creaw,
           mobilevideolink,
           titleImg,
+          lang,
         };
 
         child.current.showContentsCreateChildModal(updatedData);
       }
     });
   };
-  
 
   const handleTrashContentsRecord = async (idd) => {
     const confirmed = window.confirm(

@@ -36,6 +36,7 @@ const contentSchema = new mongoose.Schema(
     cast: Array,
     creaw: Array,
     ContentRating: Array,
+    lang:String
   },
   { timestamps: true }
 );

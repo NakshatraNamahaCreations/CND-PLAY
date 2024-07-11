@@ -186,6 +186,7 @@ exports.create = async (req, res) => {
     cast,
     creaw,
     duration,
+    lang,
   } = req.body;
   // const uniqueToken = generateUniqueToken();
 
@@ -223,6 +224,7 @@ exports.create = async (req, res) => {
       cast,
       creaw,
       duration,
+      lang,
     });
     const savedContent = await contentdata.save();
 
@@ -267,6 +269,7 @@ exports.update = async (req, res) => {
       cast,
       creaw,
       duration,
+      lang,
     } = req.body;
 
     const findemovie = await ContentModel.findOne({
@@ -310,6 +313,7 @@ exports.update = async (req, res) => {
     findemovie.creaw = creaw || findemovie.creaw;
     findemovie.duration = duration || findemovie.duration;
 
+    findemovie.lang = lang || findemovie.lang;
     const updateMovie = await ContentModel.findOneAndUpdate(
       { _id: trendingidd },
       findemovie,

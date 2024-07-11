@@ -51,6 +51,7 @@ const ContentsCreate = forwardRef((props, ref) => {
     typeOfMovie: "",
     titleImg: "",
     creaw: "",
+    lang:""
   };
 
   const [contents_data, set_contents_data] = useState(initialContentsData);
@@ -112,7 +113,7 @@ const ContentsCreate = forwardRef((props, ref) => {
         subtitle: single_contents_data.subtitle,
         active: single_contents_data.active,
         titleImg: single_contents_data.titleImg,
-
+        lang: single_contents_data.lang,
         typeOfMovie: single_contents_data.typeOfMovie,
       });
       setNumberOfInputs(single_contents_data.cast.length);
@@ -171,6 +172,7 @@ const ContentsCreate = forwardRef((props, ref) => {
       titleImg: contents_data.titleImg,
       cast: CastData,
       creaw: CrewData,
+      lang: contents_data.lang,
     };
 
     try {
@@ -230,6 +232,7 @@ const ContentsCreate = forwardRef((props, ref) => {
         titleImg: contents_data.titleImg,
         cast: CastData,
         creaw: CrewData,
+        lang: contents_data.lang,
       };
 
       ContentsPageService.updateContents(data, contents_data.id)
@@ -348,7 +351,7 @@ const ContentsCreate = forwardRef((props, ref) => {
       return updatedCrew;
     });
   };
- 
+
   return (
     <div className="mt-2 row">
       <div className="mt-2 container-fluid">
@@ -408,15 +411,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       >
                         <option value=""> - Select Content Type - </option>
-                        {/* <option
-                          selected={
-                            contents_data.section === "musics" ? true : false
-                          }
-                          value="musics"
-                        >
-                          Musics
-                        </option> */}
-                        {/* selected={(contents_data.section==='musics')?true:false}  */}
+
                         <option
                           selected={
                             contents_data.section === "movie" ? true : false
@@ -425,7 +420,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                         >
                           Movies
                         </option>
-                        {/* selected={(contents_data.section==='movie')?true:false}  */}
+
                         <option
                           selected={
                             contents_data.section === "series" ? true : false
@@ -434,9 +429,9 @@ const ContentsCreate = forwardRef((props, ref) => {
                         >
                           Web Series
                         </option>
-                        {/* selected={(contents_data.section==='series')?true:false}  */}
                       </select>
                     </div>
+
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Pay Type</label>
                       <select
@@ -572,8 +567,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                         </Select>
                       </FormControl>
                     </div>
-                    {/* {contents_data.section !== "series" &&
-                      contents_data.section !== "musics" && ( */}
+
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Movie Type</label>
                       <select
@@ -614,100 +608,33 @@ const ContentsCreate = forwardRef((props, ref) => {
                         </option>
                       </select>
                     </div>
-                    {/* )} */}
-                    {/* {contents_data.section === "series" &&
-                      contents_data.section !== "musics" && (
-                        <div className="mb-2 col-md-4">
-                          <label className="form-label">Series Type</label>
-                          <select
-                            className="content_section_data form-select"
-                            name="typeOfMovie"
-                            defaultValue={contents_data.section}
-                            onChange={handleChange}
-                          >
-                            <option value=""> - Select Series Type - </option>
-                            <option
-                              selected={
-                                contents_data.typeOfMovie === "Indie Series"
-                                  ? true
-                                  : false
-                              }
-                              value="Indie Series"
-                            >
-                              Indie Series
-                            </option>
-                       
-                            <option
-                              selected={
-                                contents_data.typeOfMovie === "Upcoming Series"
-                                  ? true
-                                  : false
-                              }
-                              value="Upcoming Series"
-                            >
-                              Upcoming Series
-                            </option>
-                          
-                            <option
-                              selected={
-                                contents_data.typeOfMovie === "Trending Series"
-                                  ? true
-                                  : false
-                              }
-                              value="Trending Series"
-                            >
-                              Trending Series
-                            </option>
-                      
-                          </select>
-                        </div>
-                      )} */}
-                    {/* {contents_data.section !== "series" &&
-                      contents_data.section === "musics" && (
-                        <div className="mb-2 col-md-4">
-                          <label className="form-label">Musics Type</label>
-                          <select
-                            className="content_section_data form-select"
-                            name="typeOfMovie"
-                            defaultValue={contents_data.section}
-                            onChange={handleChange}
-                          >
-                            <option value=""> - Select Music Type - </option>
-                            <option
-                              selected={
-                                contents_data.typeOfMovie === "Indie Music"
-                                  ? true
-                                  : false
-                              }
-                              value="Indie Music"
-                            >
-                              Indie Music
-                            </option>
-
-                            <option
-                              selected={
-                                contents_data.typeOfMovie === "Upcoming Music"
-                                  ? true
-                                  : false
-                              }
-                              value="Upcoming Music"
-                            >
-                              Upcoming Music
-                            </option>
-
-                            <option
-                              selected={
-                                contents_data.typeOfMovie === "Trending Music"
-                                  ? true
-                                  : false
-                              }
-                              value="Trending Music"
-                            >
-                              Trending Music
-                            </option>
-                          </select>
-                        </div>
-                      )} */}
+                    <div className="mb-2 col-md-4">
+                      <label className="form-label">Movie Langauge</label>
+                      <select
+                        className="content_section_data form-select"
+                        name="lang"
+                        defaultValue={contents_data.lang}
+                        onChange={handleChange}
+                      >
+                        <option value=""> - Select Langauge - </option>
+                        <option
+                          selected={
+                            contents_data.lang === "Assamese" ? true : false
+                          }
+                          value="Assamese"
+                        >
+                          Assamese
+                        </option>
+                        <option
+                          selected={
+                            contents_data.typeOfMovie === "Hindi" ? true : false
+                          }
+                          value="Hindi"
+                        >
+                          Hindi
+                        </option>
+                      </select>
+                    </div>
                     <div className="mb-2 col-md-4">
                       <label className="form-label">Content Name</label>
                       <input
@@ -764,7 +691,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></input>
                     </div>
-                    <div className="mb-2 col-md-6">
+                    <div className="mb-2 col-md-4">
                       <label className="form-label">
                         Pick Banner Color {contents_data?.background_color}
                       </label>
@@ -777,7 +704,7 @@ const ContentsCreate = forwardRef((props, ref) => {
                         onChange={handleChange}
                       ></input>
                     </div>
-                    <div className="mb-2 col-md-6">
+                    <div className="mb-2 col-md-4">
                       <label className="form-label">Poster Link</label>
                       <input
                         type="text"
